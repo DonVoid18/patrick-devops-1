@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>SILENT ASYLUM • Terror Psicológico & Supervivencia 3D</title>
+  <title>SILENT ASYLUM • Edición Pesadilla & Almas Perdidas</title>
 
   <!-- Google Fonts & Font Awesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,11 +19,12 @@
       --blood: #b30000;
       --blood-neon: #ff0033;
       --dark: #020305;
-      --panel: rgba(6, 8, 12, 0.9);
+      --panel: rgba(6, 8, 12, 0.92);
       --border: rgba(255, 0, 51, 0.25);
       --text: #e2e8f0;
       --text-muted: #64748b;
       --accent-gold: #ffd700;
+      --spirit-cyan: #38bdf8;
     }
 
     * {
@@ -63,7 +64,7 @@
       height: 100%;
       pointer-events: none;
       z-index: 5;
-      background: radial-gradient(ellipse at center, transparent 30%, rgba(0, 0, 0, 0.85) 100%);
+      background: radial-gradient(ellipse at center, transparent 30%, rgba(0, 0, 0, 0.88) 100%);
       box-shadow: inset 0 0 140px rgba(0, 0, 0, 0.95);
     }
 
@@ -111,22 +112,35 @@
     }
     @keyframes chasePulse {
       0% { box-shadow: inset 0 0 120px rgba(255, 0, 51, 0.4); }
-      100% { box-shadow: inset 0 0 220px rgba(255, 0, 51, 0.95); }
+      100% { box-shadow: inset 0 0 230px rgba(255, 0, 51, 0.98); }
     }
 
-    /* STEALTH / HIDDEN INDICATOR */
-    #stealth-badge {
+    /* HOLY SHIELD CELESTIAL BLUE BORDER */
+    #shield-vignette {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 8;
+      box-shadow: inset 0 0 160px rgba(56, 189, 248, 0);
+      transition: box-shadow 0.3s ease;
+    }
+    #shield-vignette.active {
+      box-shadow: inset 0 0 140px rgba(56, 189, 248, 0.65);
+    }
+
+    /* STEALTH / STATUS BADGES */
+    .status-badge-center {
       position: absolute;
       top: 2rem;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(16, 185, 129, 0.18);
-      border: 1px solid rgba(16, 185, 129, 0.5);
       border-radius: 20px;
       padding: 0.5rem 1.4rem;
       font-size: 0.85rem;
       font-weight: 700;
-      color: #34d399;
       display: none;
       align-items: center;
       gap: 0.6rem;
@@ -135,8 +149,18 @@
       text-transform: uppercase;
       letter-spacing: 0.12em;
     }
+    #stealth-badge {
+      background: rgba(16, 185, 129, 0.18);
+      border: 1px solid rgba(16, 185, 129, 0.5);
+      color: #34d399;
+    }
+    #shield-badge {
+      background: rgba(56, 189, 248, 0.2);
+      border: 1px solid rgba(56, 189, 248, 0.6);
+      color: #38bdf8;
+    }
 
-    /* CHASE ALARM BANNER */
+    /* CHASE BANNER */
     #chase-banner {
       position: absolute;
       top: 15%;
@@ -158,7 +182,7 @@
       100% { transform: translate(-49%, -51%) rotate(-1.2deg); }
     }
 
-    /* JUMPSCARE FULLSCREEN MODAL */
+    /* FULLSCREEN SCREAMER POPUP */
     #screamer-modal {
       position: absolute;
       top: 0;
@@ -288,7 +312,7 @@
       display: flex;
       align-items: center;
       gap: 0.8rem;
-      width: 210px;
+      width: 220px;
     }
     .bar-icon {
       font-size: 0.95rem;
@@ -312,12 +336,39 @@
       border-radius: 4px;
       transition: width 0.15s ease;
     }
+    /* HP / Cordura Bar */
+    .hp-fill {
+      background: linear-gradient(90deg, #dc2626, #ef4444);
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+    }
     .battery-fill {
       background: linear-gradient(90deg, #10b981, #00f0ff);
       box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
     }
     .stamina-fill {
       background: linear-gradient(90deg, #f59e0b, #ef4444);
+    }
+
+    /* INVENTORY SLOTS (SAL BENDITA) */
+    .inventory-container {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.4rem 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      backdrop-filter: blur(12px);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.8rem;
+    }
+    .inv-key {
+      background: #ff0055;
+      color: #fff;
+      font-weight: 800;
+      padding: 0.1rem 0.45rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
     }
 
     /* PROXIMITY RADAR SENSOR */
@@ -353,15 +404,15 @@
       top: 55%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(0, 0, 0, 0.88);
-      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: rgba(0, 0, 0, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.4);
       border-radius: 8px;
-      padding: 0.55rem 1.2rem;
-      font-size: 0.88rem;
+      padding: 0.6rem 1.3rem;
+      font-size: 0.9rem;
       color: #fff;
       display: none;
       align-items: center;
-      gap: 0.6rem;
+      gap: 0.7rem;
       backdrop-filter: blur(12px);
       z-index: 15;
     }
@@ -371,7 +422,7 @@
       font-weight: 800;
       padding: 0.15rem 0.5rem;
       border-radius: 4px;
-      font-size: 0.78rem;
+      font-size: 0.8rem;
     }
 
     /* MENUS */
@@ -381,7 +432,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(2, 3, 5, 0.95);
+      background: rgba(2, 3, 5, 0.96);
       backdrop-filter: blur(25px);
       z-index: 150;
       display: flex;
@@ -393,9 +444,9 @@
     }
 
     .horror-card {
-      max-width: 530px;
+      max-width: 560px;
       width: 100%;
-      background: rgba(8, 10, 16, 0.9);
+      background: rgba(8, 10, 16, 0.92);
       border: 1px solid rgba(255, 0, 51, 0.5);
       border-radius: 20px;
       padding: 2.5rem;
@@ -404,31 +455,38 @@
 
     .game-title {
       font-family: 'Cinzel', serif;
-      font-size: 2.4rem;
+      font-size: 2.5rem;
       font-weight: 900;
       color: #fff;
       letter-spacing: 0.1em;
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.3rem;
       text-shadow: 0 0 25px rgba(255, 0, 51, 0.9);
     }
     .game-sub {
       color: #94a3b8;
-      font-size: 0.85rem;
-      margin-bottom: 1.8rem;
+      font-size: 0.88rem;
+      margin-bottom: 1.6rem;
     }
 
-    .warning-box {
-      background: rgba(139, 0, 0, 0.2);
-      border-left: 4px solid #ff0033;
-      padding: 0.9rem 1.1rem;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      color: #fca5a5;
-      margin-bottom: 2rem;
+    .mechanics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+      margin-bottom: 1.8rem;
       text-align: left;
-      display: flex;
-      align-items: center;
-      gap: 0.9rem;
+    }
+    .mech-item {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 0.6rem 0.8rem;
+      font-size: 0.78rem;
+      color: #cbd5e1;
+    }
+    .mech-item strong {
+      color: #fff;
+      display: block;
+      margin-bottom: 0.2rem;
     }
 
     .btn-play {
@@ -456,12 +514,12 @@
     }
 
     .controls-help {
-      margin-top: 1.6rem;
+      margin-top: 1.5rem;
       font-size: 0.75rem;
       color: var(--text-muted);
       display: flex;
       justify-content: center;
-      gap: 1.2rem;
+      gap: 1rem;
       flex-wrap: wrap;
     }
     .key-badge {
@@ -489,15 +547,15 @@
         display: flex;
       }
       .bar-container {
-        width: 140px;
+        width: 150px;
       }
-      #chase-banner {
-        font-size: 2.2rem;
+      .mechanics-grid {
+        grid-template-columns: 1fr;
       }
     }
     .touch-btn {
-      width: 60px;
-      height: 60px;
+      width: 58px;
+      height: 58px;
       border-radius: 50%;
       background: rgba(10, 14, 24, 0.85);
       border: 1px solid rgba(255, 255, 255, 0.2);
@@ -505,7 +563,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.3rem;
+      font-size: 1.25rem;
       backdrop-filter: blur(12px);
     }
     .touch-btn:active {
@@ -519,22 +577,27 @@
   <!-- WebGL Render Canvas -->
   <div id="game-canvas"></div>
 
-  <!-- Atmospheric Visual Overlays -->
+  <!-- Overlays -->
   <div id="vhs-overlay"></div>
   <div id="scanlines"></div>
   <div id="static-glitch"></div>
   <div id="chase-vignette"></div>
+  <div id="shield-vignette"></div>
 
-  <!-- Stealth Alert Badge -->
-  <div id="stealth-badge">
+  <!-- Status Badges -->
+  <div class="status-badge-center" id="stealth-badge">
     <i class="fa-solid fa-eye-slash"></i>
     <span>Oculto en las sombras</span>
   </div>
+  <div class="status-badge-center" id="shield-badge">
+    <i class="fa-solid fa-shield-halved"></i>
+    <span>Escudo Sagrado del Niño Activo</span>
+  </div>
 
-  <!-- CHASE BANNER -->
-  <div id="chase-banner">⚠️ ¡CORRE! ¡LA SOMBRA TE PERSIGUE! ⚠️</div>
+  <!-- Chase Banner -->
+  <div id="chase-banner">⚠️ ¡CORRE! ¡LA SOMBRA ESTÁ FURISOSA! ⚠️</div>
 
-  <!-- FULLSCREEN JUMPSCARE MODAL WITH HORROR DEMON FACE -->
+  <!-- Jumpscare Modal -->
   <div id="screamer-modal">
     <canvas id="screamer-canvas" width="600" height="600"></canvas>
     <div class="screamer-text" id="screamer-text">¡MUERE!</div>
@@ -546,7 +609,7 @@
   <!-- Interaction Prompt -->
   <div class="interact-prompt" id="interact-prompt">
     <span class="prompt-key">E</span>
-    <span id="prompt-text">Recoger Reliquia Maldita</span>
+    <span id="prompt-text">Interactuar</span>
   </div>
 
   <!-- In-Game HUD -->
@@ -561,13 +624,21 @@
       </div>
 
       <div class="status-group">
+        <!-- HP / Cordura -->
+        <div class="bar-container">
+          <i class="fa-solid fa-heart-pulse bar-icon" style="color: #ef4444;"></i>
+          <div class="bar-bg">
+            <div class="bar-fill hp-fill" id="hud-hp"></div>
+          </div>
+          <span style="font-size: 0.72rem; font-weight: 700; color: #ef4444;" id="hud-hp-text">100 HP</span>
+        </div>
         <!-- Flashlight Battery -->
         <div class="bar-container">
           <i class="fa-solid fa-flashlight bar-icon active" id="flashlight-icon"></i>
           <div class="bar-bg">
             <div class="bar-fill battery-fill" id="hud-battery"></div>
           </div>
-          <span style="font-size: 0.7rem; font-weight: 700; color: #00f0ff;" id="hud-battery-text">100%</span>
+          <span style="font-size: 0.72rem; font-weight: 700; color: #00f0ff;" id="hud-battery-text">100%</span>
         </div>
         <!-- Stamina -->
         <div class="bar-container">
@@ -576,10 +647,15 @@
             <div class="bar-fill stamina-fill" id="hud-stamina"></div>
           </div>
         </div>
-        <!-- Proximity Radar Sensor -->
+        <!-- Inventory (Sal Bendita / Píldoras) -->
+        <div class="inventory-container">
+          <span class="inv-key">Q</span>
+          <span>Sal Bendita: <strong id="hud-salt" style="color: #ffd700;">1</strong></span>
+        </div>
+        <!-- Proximity Radar -->
         <div class="radar-box">
           <span class="radar-dot" id="radar-dot"></span>
-          <span id="radar-text">Detector: Normal</span>
+          <span id="radar-text">Detector: Buscando...</span>
         </div>
       </div>
     </div>
@@ -587,10 +663,10 @@
     <!-- Bottom Status Bar -->
     <div style="display: flex; justify-content: space-between; align-items: flex-end;">
       <div style="font-size: 0.75rem; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.12em;">
-        <span>PABELLÓN 04 • ASILO SANATORIUM</span>
+        <span>PABELLÓN 04 • ALMAS ATRAPADAS</span>
       </div>
       <div style="font-size: 0.75rem; color: rgba(255,255,255,0.4); font-family: 'Space Grotesk';">
-        <span>[F] Linterna | [Shift] Correr | [E] Interactuar</span>
+        <span>[F] Linterna | [Shift] Correr | [E] Interactuar | [Q] Usar Sal</span>
       </div>
     </div>
   </div>
@@ -605,7 +681,8 @@
       <div class="touch-btn" id="m-down"><i class="fa-solid fa-chevron-down"></i></div>
       <div class="touch-btn" id="m-right"><i class="fa-solid fa-chevron-right"></i></div>
     </div>
-    <div style="display: flex; gap: 0.8rem; align-items: flex-end;">
+    <div style="display: flex; gap: 0.6rem; align-items: flex-end;">
+      <div class="touch-btn" id="m-salt" style="font-size: 1.1rem; color: #ffd700;"><i class="fa-solid fa-shield-virus"></i></div>
       <div class="touch-btn" id="m-light" style="font-size: 1.1rem;"><i class="fa-solid fa-lightbulb"></i></div>
       <div class="touch-btn" id="m-run" style="font-size: 1.1rem;"><i class="fa-solid fa-bolt"></i></div>
       <div class="touch-btn" id="m-action" style="font-size: 1.1rem;"><i class="fa-solid fa-hand"></i></div>
@@ -616,11 +693,29 @@
   <div class="modal-screen" id="start-modal">
     <div class="horror-card">
       <div class="game-title">SILENT ASYLUM</div>
-      <p class="game-sub">Edición Persecución Implacable</p>
+      <p class="game-sub">Dificultad Pesadilla • Las Almas de los Niños Perdidos</p>
 
-      <div class="warning-box">
-        <i class="fa-solid fa-skull-crossbones" style="font-size: 1.6rem; color: #ff0033;"></i>
-        <span><strong>TIPS DE SUPERVIVENCIA:</strong> Apaga la linterna (F) en esquinas oscuras para despistar al monstruo. Recoge baterías para no quedar a oscuras.</span>
+      <div class="mechanics-grid">
+        <div class="mech-item">
+          <strong>👼 1. Niños Espectrales</strong>
+          Curan tu vida (HP), recargan cordura y te otorgan un Escudo Sagrado temporal.
+        </div>
+        <div class="mech-item">
+          <strong>🧂 2. Sal Bendita (Tecla Q)</strong>
+          Lanza sal para aturdir y frenar en seco al monstruo durante una persecución.
+        </div>
+        <div class="mech-item">
+          <strong>🕯️ 3. Altares Seguros</strong>
+          Zonas sagradas con velas donde el monstruo no puede entrar.
+        </div>
+        <div class="mech-item">
+          <strong>💀 4. Dificultad Dinámica</strong>
+          Cada reliquia recogida enfurece al monstruo y aumenta permanentemente su velocidad.
+        </div>
+        <div class="mech-item" style="grid-column: span 2;">
+          <strong>🩸 5. Sistema de Salud (HP) y Rasguños</strong>
+          No mueres de 1 golpe: los ataques dañan 45 HP. ¡Puedes sobrevivir y escapar si eres rápido!
+        </div>
       </div>
 
       <button class="btn-play" id="btn-start-game">
@@ -628,11 +723,11 @@
       </button>
 
       <div class="controls-help">
-        <div><span class="key-badge">W A S D</span> Caminar</div>
-        <div><span class="key-badge">RATÓN</span> Mirar alrededor</div>
+        <div><span class="key-badge">W A S D</span> Moverse</div>
         <div><span class="key-badge">SHIFT</span> Correr</div>
         <div><span class="key-badge">F</span> Linterna</div>
-        <div><span class="key-badge">E</span> Recoger objeto</div>
+        <div><span class="key-badge">Q</span> Sal Bendita</div>
+        <div><span class="key-badge">E</span> Interactuar</div>
       </div>
     </div>
   </div>
@@ -641,7 +736,7 @@
   <div class="modal-screen" id="finish-modal" style="display: none;">
     <div class="horror-card">
       <div class="game-title" id="finish-title">HAS ESCAPADO</div>
-      <p class="game-sub" id="finish-sub">Sobreviviste a la persecución de La Sombra</p>
+      <p class="game-sub" id="finish-sub">Las almas de los niños te guiaron hacia la salida</p>
 
       <button class="btn-play" id="btn-play-again" style="margin-top: 1.5rem;">
         <i class="fa-solid fa-rotate-right"></i> JUGAR DE NUEVO
@@ -655,10 +750,6 @@
       constructor() {
         this.ctx = null;
         this.isInit = false;
-        this.droneOsc1 = null;
-        this.droneOsc2 = null;
-        this.droneGain = null;
-        this.chaseDroneGain = null;
       }
 
       init() {
@@ -680,7 +771,6 @@
 
         this.droneFilter.type = 'lowpass';
         this.droneFilter.frequency.setValueAtTime(130, this.ctx.currentTime);
-
         this.droneGain.gain.setValueAtTime(0.2, this.ctx.currentTime);
 
         this.droneOsc1.connect(this.droneFilter);
@@ -723,19 +813,87 @@
         }
       }
 
+      // Music box melody when child soul helps player
+      playMusicBoxMelody() {
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const notes = [659.25, 783.99, 987.77, 1046.50, 1318.51, 1046.50, 987.77];
+        notes.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.18);
+          gain.gain.setValueAtTime(0.18, now + idx * 0.18);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.18 + 0.5);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + idx * 0.18);
+          osc.stop(now + idx * 0.18 + 0.55);
+        });
+      }
+
+      // Stun / Salt explosion sound
+      playSaltStunSound() {
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(450, now);
+        osc.frequency.exponentialRampToValueAtTime(80, now + 0.4);
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.5);
+      }
+
+      // Monster roar
+      playMonsterRoar() {
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(85, now);
+        osc.frequency.linearRampToValueAtTime(140, now + 0.3);
+        osc.frequency.linearRampToValueAtTime(55, now + 0.8);
+        gain.gain.setValueAtTime(0.35, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.95);
+      }
+
+      // Player Damage Hurt Sound
+      playPlayerHurt() {
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(120, now);
+        osc.frequency.exponentialRampToValueAtTime(45, now + 0.25);
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.32);
+      }
+
       playHeartbeat(intensity = 0.5) {
         if (!this.ctx) return;
         const now = this.ctx.currentTime;
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
-
         osc.type = 'sine';
         osc.frequency.setValueAtTime(62, now);
         osc.frequency.exponentialRampToValueAtTime(34, now + 0.11);
-
         gain.gain.setValueAtTime(0.4 * intensity, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
-
         osc.connect(gain);
         gain.connect(this.ctx.destination);
         osc.start(now);
@@ -762,7 +920,6 @@
         if (!this.ctx) return;
         const now = this.ctx.currentTime;
         const screamFreqs = [520, 587, 659, 740, 880, 1046, 1318, 1760];
-
         screamFreqs.forEach((freq, idx) => {
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
@@ -770,28 +927,13 @@
           osc.frequency.setValueAtTime(freq, now);
           osc.frequency.linearRampToValueAtTime(freq * 1.8, now + 0.15);
           osc.frequency.linearRampToValueAtTime(freq * 0.4, now + 0.75);
-
           gain.gain.setValueAtTime(0.25, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.85);
-
           osc.connect(gain);
           gain.connect(this.ctx.destination);
           osc.start(now);
           osc.stop(now + 0.9);
         });
-
-        const bufSize = this.ctx.sampleRate * 0.4;
-        const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
-        const data = buf.getChannelData(0);
-        for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufSize * 0.2));
-        const noise = this.ctx.createBufferSource();
-        noise.buffer = buf;
-        const ngain = this.ctx.createGain();
-        ngain.gain.setValueAtTime(0.4, now);
-        ngain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
-        noise.connect(ngain);
-        ngain.connect(this.ctx.destination);
-        noise.start(now);
       }
 
       playFootstep() {
@@ -865,7 +1007,7 @@
     }
   </script>
 
-  <!-- HORROR 3D GAME ENGINE & CHASE LOGIC -->
+  <!-- HORROR 3D GAME ENGINE WITH SPECTRAL CHILDREN & MECHANICS -->
   <script>
     const audio = new NightmareAudioEngine();
 
@@ -880,13 +1022,17 @@
     let playerPitch = 0;
     let keys = { w: false, a: false, s: false, d: false, shift: false };
     let flashlightOn = true;
+    let playerHP = 100;
     let batteryLevel = 100;
     let stamina = 100;
+    let saltItems = 2; // Ítem arrojable para aturdir al monstruo
+    let holyShieldTimer = 0; // Escudo sagrado otorgado por niños
     let keysCollected = 0;
     const totalKeysNeeded = 5;
     let stepTimer = 0;
     let heartbeatTimer = 0;
     let cameraShake = 0;
+    let hitInvulnerability = 0;
 
     // Maze Configuration (18x18)
     const mapSize = 18;
@@ -915,13 +1061,16 @@
     const wallBoundingBoxes = [];
     const relicObjects = [];
     const batteryPickups = [];
+    const spiritChildren = [];
+    const blessedAltars = [];
 
     // The Monster (La Sombra)
     let monster = {
       mesh: null,
       pos: new THREE.Vector3(12 * cellSize, 1.8, 12 * cellSize),
-      baseSpeed: 3.2,
-      chaseSpeed: 6.4,
+      baseSpeed: 3.5,
+      chaseSpeed: 6.8,
+      stunTimer: 0,
       isChasing: false,
       chaseTimer: 0,
       patrolIndex: 0,
@@ -935,7 +1084,7 @@
       armR: null
     };
 
-    // PROCEDURAL SCREAMER FACE GENERATOR
+    // JUMPSCARE DEMON FACE GENERATOR
     function renderHorrorDemonFace() {
       const canvas = document.getElementById('screamer-canvas');
       const ctx = canvas.getContext('2d');
@@ -1031,7 +1180,6 @@
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       document.getElementById('game-canvas').appendChild(renderer.domElement);
 
-      // Ambient light - faint dark moonlight
       const ambient = new THREE.AmbientLight(0x080a12, 0.35);
       scene.add(ambient);
 
@@ -1050,6 +1198,9 @@
 
       buildLabyrinth();
       buildMonster();
+      buildSpectralChildren();
+      buildBlessedAltars();
+
       setupControls();
       window.addEventListener('resize', onWindowResize);
 
@@ -1120,7 +1271,6 @@
             scene.add(wall);
             wallBoundingBoxes.push(new THREE.Box3().setFromObject(wall));
           } else if (cell === 2) {
-            // Relic Spawn
             const relicGroup = new THREE.Group();
             relicGroup.position.set(x, 1.2, z);
 
@@ -1136,7 +1286,7 @@
         }
       }
 
-      // SPAWN SPARE BATTERIES IN MAZE CORNERS
+      // BATTERIES
       const batteryLocs = [
         [3 * cellSize + cellSize / 2, 3 * cellSize + cellSize / 2],
         [8 * cellSize + cellSize / 2, 5 * cellSize + cellSize / 2],
@@ -1161,6 +1311,103 @@
       });
 
       playerPos.set(1 * cellSize + cellSize / 2, 1.6, 1 * cellSize + cellSize / 2);
+    }
+
+    // --- NUEVO: NIÑOS ESPECTRALES (ALMAS QUE CURAN Y PROTEGEN) ---
+    function buildSpectralChildren() {
+      // 2 Niños espectrales en salas seguras
+      const childSpawns = [
+        [4 * cellSize + cellSize / 2, 8 * cellSize + cellSize / 2],
+        [11 * cellSize + cellSize / 2, 14 * cellSize + cellSize / 2]
+      ];
+
+      const spiritMat = new THREE.MeshStandardMaterial({
+        color: 0xbae6fd,
+        emissive: 0x38bdf8,
+        emissiveIntensity: 0.6,
+        transparent: true,
+        opacity: 0.75,
+        roughness: 0.3
+      });
+
+      childSpawns.forEach((loc, idx) => {
+        const cg = new THREE.Group();
+        cg.position.set(loc[0], 1.1, loc[1]);
+
+        // Cabeza y cuerpo infantil
+        const head = new THREE.Mesh(new THREE.SphereGeometry(0.25, 12, 12), spiritMat);
+        head.position.y = 0.55;
+        cg.add(head);
+
+        const body = new THREE.Mesh(new THREE.ConeGeometry(0.28, 0.75, 12), spiritMat);
+        body.position.y = 0.1;
+        cg.add(body);
+
+        // Halo celestial
+        const halo = new THREE.Mesh(new THREE.TorusGeometry(0.22, 0.03, 8, 24), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+        halo.rotation.x = Math.PI / 2;
+        halo.position.y = 0.85;
+        cg.add(halo);
+
+        // Luz tenue celestial
+        const clight = new THREE.PointLight(0x38bdf8, 1.6, 7);
+        clight.position.set(0, 0.4, 0);
+        cg.add(clight);
+
+        scene.add(cg);
+        spiritChildren.push({
+          group: cg,
+          head: head,
+          halo: halo,
+          initialY: 1.1,
+          blessedGiven: false,
+          cooldownTimer: 0
+        });
+      });
+    }
+
+    // --- NUEVO: ALTARES SAGRADOS CON VELAS (ZONAS SEGURAS) ---
+    function buildBlessedAltars() {
+      const altarSpawns = [
+        [7 * cellSize + cellSize / 2, 3 * cellSize + cellSize / 2],
+        [14 * cellSize + cellSize / 2, 8 * cellSize + cellSize / 2]
+      ];
+
+      const pedMat = new THREE.MeshStandardMaterial({ color: 0x27272a, roughness: 0.7 });
+      const candleMat = new THREE.MeshBasicMaterial({ color: 0xffedd5 });
+      const flameMat = new THREE.MeshBasicMaterial({ color: 0xffa500 });
+
+      altarSpawns.forEach(loc => {
+        const ag = new THREE.Group();
+        ag.position.set(loc[0], 0, loc[1]);
+
+        // Pedestal de piedra
+        const ped = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.9, 0.8, 16), pedMat);
+        ped.position.y = 0.4;
+        ag.add(ped);
+
+        // 3 Velas benditas
+        for (let i = 0; i < 3; i++) {
+          const angle = (i / 3) * Math.PI * 2;
+          const cx = Math.cos(angle) * 0.45;
+          const cz = Math.sin(angle) * 0.45;
+
+          const candle = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.35, 8), candleMat);
+          candle.position.set(cx, 0.95, cz);
+          ag.add(candle);
+
+          const flame = new THREE.Mesh(new THREE.SphereGeometry(0.04, 6, 6), flameMat);
+          flame.position.set(cx, 1.15, cz);
+          ag.add(flame);
+        }
+
+        const candleLight = new THREE.PointLight(0xffa500, 1.2, 5);
+        candleLight.position.set(0, 1.3, 0);
+        ag.add(candleLight);
+
+        scene.add(ag);
+        blessedAltars.push({ group: ag, radius: 2.8 });
+      });
     }
 
     function buildMonster() {
@@ -1202,7 +1449,7 @@
       scene.add(monster.mesh);
     }
 
-    // --- CONTROLS & FLASHLIGHT TOGGLE (FIXED 100%) ---
+    // --- CONTROLS & FLASHLIGHT TOGGLE ---
     function setupControls() {
       const canvas = document.getElementById('game-canvas');
 
@@ -1228,6 +1475,7 @@
         if (e.key === 'd' || e.key === 'D') keys.d = true;
         if (e.key === 'Shift') keys.shift = true;
         if (e.key === 'f' || e.key === 'F') toggleFlashlight();
+        if (e.key === 'q' || e.key === 'Q') useSaltStun();
         if (e.key === 'e' || e.key === 'E') checkInteractAction();
       });
 
@@ -1245,6 +1493,7 @@
       setupMobileBtn('m-right', 'd');
       setupMobileBtn('m-run', 'shift');
       document.getElementById('m-light').addEventListener('click', toggleFlashlight);
+      document.getElementById('m-salt').addEventListener('click', useSaltStun);
       document.getElementById('m-action').addEventListener('click', checkInteractAction);
 
       document.getElementById('btn-start-game').addEventListener('click', () => {
@@ -1267,7 +1516,6 @@
       el.addEventListener('touchend', (e) => { e.preventDefault(); keys[key] = false; });
     }
 
-    // --- CORREGIDO: TOGGLE FLASHLIGHT FUNCIONA SIEMPRE ---
     function toggleFlashlight() {
       flashlightOn = !flashlightOn;
       flashlight.visible = flashlightOn;
@@ -1284,8 +1532,26 @@
       audio.playFlashlightClick();
     }
 
+    // MECÁNICA: USAR SAL BENDITA (ATURDIR MONSTRUO)
+    function useSaltStun() {
+      if (saltItems <= 0) return;
+      saltItems--;
+      document.getElementById('hud-salt').textContent = saltItems;
+      audio.playSaltStunSound();
+
+      // Aturde al monstruo si está persiguiendo o cerca
+      const dist = playerPos.distanceTo(monster.pos);
+      if (dist < 18) {
+        monster.stunTimer = 4.5; // 4.5 segundos de aturdimiento total
+        monster.isChasing = false;
+        audio.playMonsterRoar();
+        stopChase();
+      }
+    }
+
+    // CHECK INTERACTION (RELIQUIAS, BATERÍAS Y NIÑOS ESPECTRALES)
     function checkInteractAction() {
-      // 1. Check Relics
+      // 1. Reliquias
       relicObjects.forEach(relic => {
         if (!relic.collected) {
           const dist = playerPos.distanceTo(relic.group.position);
@@ -1296,7 +1562,11 @@
             document.getElementById('hud-keys').textContent = keysCollected;
             audio.playPickupRelic();
 
-            triggerScreamer("¡LA MALDICIÓN DESPERTÓ!", 950);
+            // AUMENTO DE DIFICULTAD: El monstruo se vuelve más rápido con cada reliquia
+            monster.baseSpeed += 0.35;
+            monster.chaseSpeed += 0.55;
+
+            triggerScreamer("¡LA MALDICIÓN SE INTENSIFICA!", 950);
             startEnragedChase();
 
             if (keysCollected >= totalKeysNeeded) {
@@ -1306,7 +1576,7 @@
         }
       });
 
-      // 2. Check Batteries
+      // 2. Baterías
       batteryPickups.forEach(batt => {
         if (!batt.collected) {
           const dist = playerPos.distanceTo(batt.group.position);
@@ -1320,6 +1590,28 @@
           }
         }
       });
+
+      // 3. Niños Espectrales (Bendición & Curación)
+      spiritChildren.forEach(child => {
+        const dist = playerPos.distanceTo(child.group.position);
+        if (dist < 3.5 && child.cooldownTimer <= 0) {
+          child.cooldownTimer = 25; // Cooldown de 25 segundos
+          playerHP = 100; // Curación completa de vida y cordura
+          holyShieldTimer = 15; // 15 segundos de escudo sagrado
+          saltItems = Math.min(3, saltItems + 1); // Regala 1 frasco de sal bendita
+          document.getElementById('hud-salt').textContent = saltItems;
+          updateHPDisplay();
+
+          audio.playMusicBoxMelody();
+          document.getElementById('shield-badge').style.display = 'flex';
+          document.getElementById('shield-vignette').classList.add('active');
+        }
+      });
+    }
+
+    function updateHPDisplay() {
+      document.getElementById('hud-hp').style.width = `${playerHP}%`;
+      document.getElementById('hud-hp-text').textContent = `${Math.round(playerHP)} HP`;
     }
 
     function startEnragedChase() {
@@ -1339,18 +1631,27 @@
 
     function resetGame() {
       keysCollected = 0;
+      playerHP = 100;
       batteryLevel = 100;
       stamina = 100;
+      saltItems = 2;
+      holyShieldTimer = 0;
       flashlightOn = true;
       flashlight.visible = true;
       flashlight.intensity = 3.6;
       document.getElementById('flashlight-icon').classList.add('active');
       document.getElementById('hud-keys').textContent = 0;
+      document.getElementById('hud-salt').textContent = 2;
       document.getElementById('hud-battery').style.width = '100%';
       document.getElementById('hud-battery-text').textContent = '100%';
+      document.getElementById('shield-badge').style.display = 'none';
+      document.getElementById('shield-vignette').classList.remove('active');
+      updateHPDisplay();
 
       playerPos.set(1 * cellSize + cellSize / 2, 1.6, 1 * cellSize + cellSize / 2);
       monster.pos.set(12 * cellSize, 1.8, 12 * cellSize);
+      monster.baseSpeed = 3.5;
+      monster.chaseSpeed = 6.8;
       stopChase();
 
       relicObjects.forEach(r => {
@@ -1377,7 +1678,7 @@
       const modal = document.getElementById('finish-modal');
       document.getElementById('finish-title').textContent = '¡HAS ESCAPADO!';
       document.getElementById('finish-title').style.color = '#ffd700';
-      document.getElementById('finish-sub').textContent = 'Recogiste las 5 reliquias y burlaste la persecución mortal.';
+      document.getElementById('finish-sub').textContent = 'Las almas de los niños te protegieron y escapaste del Asilo con vida.';
       modal.style.display = 'flex';
       audio.playPickupRelic();
     }
@@ -1392,7 +1693,7 @@
         const modal = document.getElementById('finish-modal');
         document.getElementById('finish-title').textContent = 'NO LOGRASTE ESCAPAR';
         document.getElementById('finish-title').style.color = '#ff0033';
-        document.getElementById('finish-sub').textContent = 'La Sombra te despedazó en la oscuridad...';
+        document.getElementById('finish-sub').textContent = 'Tu cordura y cuerpo sucumbieron ante la Sombra...';
         modal.style.display = 'flex';
       }, 1900);
     }
@@ -1411,7 +1712,7 @@
         updatePlayerMovement(delta);
         updateFlashlight(delta);
         updateMonsterAI(delta);
-        updateInteractables(delta);
+        updateEntities(delta);
         checkPromptsAndRadar();
       }
 
@@ -1426,7 +1727,7 @@
         speed = 7.6;
         stamina = Math.max(0, stamina - delta * 24);
       } else {
-        stamina = Math.min(100, stamina + delta * 16); // Recuperación de estamina mejorada
+        stamina = Math.min(100, stamina + delta * 16);
       }
       document.getElementById('hud-stamina').style.width = `${stamina}%`;
 
@@ -1451,7 +1752,6 @@
       const nextX = playerPos.x + moveDir.x * speed * delta;
       const nextZ = playerPos.z + moveDir.z * speed * delta;
 
-      // Colisión fluida sin atascos (radio optimizado 0.42)
       const pRadius = 0.42;
       if (!isCollidingWithWalls(nextX, playerPos.z, pRadius)) playerPos.x = nextX;
       if (!isCollidingWithWalls(playerPos.x, nextZ, pRadius)) playerPos.z = nextZ;
@@ -1464,6 +1764,9 @@
       camera.position.set(playerPos.x + shakeX, playerPos.y + bobY + shakeY, playerPos.z);
       camera.rotation.y = playerYaw;
       camera.rotation.x = playerPitch;
+
+      // Invulnerability frame decay
+      if (hitInvulnerability > 0) hitInvulnerability -= delta;
     }
 
     function isCollidingWithWalls(x, z, radius) {
@@ -1477,7 +1780,6 @@
       return false;
     }
 
-    // --- CORREGIDO: LINTERNA SE ENCIENDE Y APAGA PERFECTAMENTE ---
     function updateFlashlight(delta) {
       if (flashlightOn) {
         batteryLevel = Math.max(0, batteryLevel - delta * 0.55);
@@ -1488,14 +1790,13 @@
           flashlight.intensity = 0;
           document.getElementById('flashlight-icon').classList.remove('active');
         } else if (batteryLevel < 20 || monster.isChasing) {
-          // Parpadeo de batería baja o persecución
           if (Math.random() < (monster.isChasing ? 0.15 : 0.07)) {
             flashlight.intensity = Math.random() * 1.2;
           } else {
             flashlight.intensity = 3.6;
           }
         } else {
-          flashlight.intensity = 3.6; // Restaurar siempre intensidad máxima al encender
+          flashlight.intensity = 3.6;
         }
       } else {
         flashlight.intensity = 0;
@@ -1506,13 +1807,28 @@
       flashlightTarget.position.copy(camera.position).add(lookDir.multiplyScalar(15));
     }
 
-    // --- MONSTER CHASE & STEALTH MECÁNICA ---
+    // --- MONSTER CHASE & HP DAMAGE SYSTEM ---
     function updateMonsterAI(delta) {
       const distToPlayer = monster.pos.distanceTo(playerPos);
       const staticEl = document.getElementById('static-glitch');
       const stealthBadge = document.getElementById('stealth-badge');
 
-      // Stealth check: Si linterna está apagada y jugador no corre
+      // Check if player is inside blessed safe altar
+      let isInsideBlessedAltar = false;
+      blessedAltars.forEach(altar => {
+        if (playerPos.distanceTo(altar.group.position) < altar.radius) {
+          isInsideBlessedAltar = true;
+        }
+      });
+
+      // Monster Stun check
+      if (monster.stunTimer > 0) {
+        monster.stunTimer -= delta;
+        monster.mesh.rotation.y += delta * 5;
+        return;
+      }
+
+      // Stealth check
       const isStealthed = !flashlightOn && !keys.shift;
       if (isStealthed && distToPlayer > 3.5) {
         stealthBadge.style.display = 'flex';
@@ -1535,14 +1851,14 @@
         staticEl.style.opacity = '0';
       }
 
-      // Detection: Si jugador alumbra al monstruo o corre cerca, inicia persecución
-      if (distToPlayer < 18 && (flashlightOn || keys.shift)) {
+      // Spot player
+      if (distToPlayer < 18 && (flashlightOn || keys.shift) && !isInsideBlessedAltar) {
         if (!monster.isChasing) {
           startEnragedChase();
         }
       }
 
-      // Animación de garras
+      // Flailing arms animation
       if (monster.armL && monster.armR) {
         const armSwing = Math.sin(globalTime * (monster.isChasing ? 18 : 6)) * 0.6;
         monster.armL.rotation.x = armSwing;
@@ -1552,7 +1868,12 @@
       if (monster.isChasing) {
         monster.chaseTimer -= delta;
 
-        // Si el jugador apaga la linterna y se aleja, el monstruo pierde el rastro
+        // If player enters blessed altar, monster cannot enter!
+        if (isInsideBlessedAltar) {
+          stopChase();
+          return;
+        }
+
         if (isStealthed && distToPlayer > 9.5) {
           stopChase();
         } else if (monster.chaseTimer <= 0 && distToPlayer > 18) {
@@ -1563,9 +1884,35 @@
         monster.pos.add(dir.multiplyScalar(monster.chaseSpeed * delta));
         monster.mesh.lookAt(playerPos.x, monster.pos.y, playerPos.z);
 
-        if (distToPlayer < 1.35) {
-          triggerCaughtGameOver();
-          return;
+        // ATTACK PLAYER / DAMAGE HP
+        if (distToPlayer < 1.45 && hitInvulnerability <= 0) {
+          hitInvulnerability = 1.2; // 1.2s i-frames
+          cameraShake = 0.45;
+
+          // Holy Shield absorbs hit
+          if (holyShieldTimer > 0) {
+            holyShieldTimer = 0;
+            monster.stunTimer = 3.0; // Repels and stuns monster!
+            audio.playMonsterRoar();
+            document.getElementById('shield-badge').style.display = 'none';
+            document.getElementById('shield-vignette').classList.remove('active');
+            triggerScreamer("¡EL ESCUDO SAGRADO TE SALVÓ!", 750);
+            return;
+          }
+
+          // Damage HP
+          playerHP -= 45;
+          updateHPDisplay();
+          audio.playPlayerHurt();
+
+          if (playerHP <= 0) {
+            triggerCaughtGameOver();
+            return;
+          } else {
+            // Knockback player slightly
+            triggerScreamer("¡TE RASGUÑÓ! ¡HUYE!", 600);
+            monster.stunTimer = 1.2; // Breve pausa tras atacar
+          }
         }
       } else {
         const target = monster.patrolPoints[monster.patrolIndex];
@@ -1582,7 +1929,8 @@
       monster.mesh.position.copy(monster.pos);
     }
 
-    function updateInteractables(delta) {
+    function updateEntities(delta) {
+      // Relics
       relicObjects.forEach(r => {
         if (!r.collected) {
           r.mesh.rotation.y += delta * 1.6;
@@ -1590,18 +1938,36 @@
         }
       });
 
+      // Batteries
       batteryPickups.forEach(b => {
         if (!b.collected) {
           b.group.rotation.y += delta * 2.0;
         }
       });
+
+      // Spectral Children Hovering Animation
+      spiritChildren.forEach(child => {
+        child.group.position.y = child.initialY + Math.sin(globalTime * 2.5) * 0.12;
+        child.halo.rotation.z += delta * 1.5;
+        if (child.cooldownTimer > 0) child.cooldownTimer -= delta;
+      });
+
+      // Holy Shield Timer
+      if (holyShieldTimer > 0) {
+        holyShieldTimer -= delta;
+        if (holyShieldTimer <= 0) {
+          document.getElementById('shield-badge').style.display = 'none';
+          document.getElementById('shield-vignette').classList.remove('active');
+        }
+      }
     }
 
-    // --- PROXIMITY RADAR & INTERACTION DETECTION ---
+    // --- PROXIMITY RADAR & PROMPT DETECTION ---
     function checkPromptsAndRadar() {
       let nearestRelicDist = Infinity;
       let isNearRelic = false;
       let isNearBattery = false;
+      let isNearChild = false;
       const crosshair = document.getElementById('crosshair');
 
       relicObjects.forEach(r => {
@@ -1619,7 +1985,12 @@
         }
       });
 
-      // Update Proximity Radar
+      spiritChildren.forEach(c => {
+        const d = playerPos.distanceTo(c.group.position);
+        if (d < 3.5) isNearChild = true;
+      });
+
+      // Proximity Radar
       const radarText = document.getElementById('radar-text');
       const radarDot = document.getElementById('radar-dot');
 
@@ -1640,11 +2011,15 @@
         radarDot.style.boxShadow = '0 0 6px #10b981';
       }
 
-      // Interaction Prompt
+      // Interaction Prompts
       const prompt = document.getElementById('interact-prompt');
       const promptText = document.getElementById('prompt-text');
 
-      if (isNearRelic) {
+      if (isNearChild) {
+        promptText.textContent = "Recibir Bendición & Curación del Niño";
+        prompt.style.display = 'flex';
+        crosshair.classList.add('active');
+      } else if (isNearRelic) {
         promptText.textContent = "Recoger Reliquia Maldita";
         prompt.style.display = 'flex';
         crosshair.classList.add('active');
