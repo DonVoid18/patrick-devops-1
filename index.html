@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>SILENT ASYLUM • Edición Pesadilla & Almas Perdidas</title>
+  <title>SILENT ASYLUM • Dificultad Pesadilla Máxima</title>
 
   <!-- Google Fonts & Font Awesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,11 +20,12 @@
       --blood-neon: #ff0033;
       --dark: #020305;
       --panel: rgba(6, 8, 12, 0.92);
-      --border: rgba(255, 0, 51, 0.25);
+      --border: rgba(255, 0, 51, 0.3);
       --text: #e2e8f0;
       --text-muted: #64748b;
       --accent-gold: #ffd700;
       --spirit-cyan: #38bdf8;
+      --rage-purple: #c026d3;
     }
 
     * {
@@ -64,8 +65,8 @@
       height: 100%;
       pointer-events: none;
       z-index: 5;
-      background: radial-gradient(ellipse at center, transparent 30%, rgba(0, 0, 0, 0.88) 100%);
-      box-shadow: inset 0 0 140px rgba(0, 0, 0, 0.95);
+      background: radial-gradient(ellipse at center, transparent 30%, rgba(0, 0, 0, 0.9) 100%);
+      box-shadow: inset 0 0 150px rgba(0, 0, 0, 0.98);
     }
 
     #scanlines {
@@ -90,7 +91,7 @@
       height: 100%;
       pointer-events: none;
       z-index: 7;
-      background: radial-gradient(circle, rgba(179, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.85) 100%);
+      background: radial-gradient(circle, rgba(179, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.9) 100%);
       opacity: 0;
       transition: opacity 0.15s ease;
     }
@@ -108,11 +109,31 @@
       transition: box-shadow 0.2s ease;
     }
     #chase-vignette.active {
-      animation: chasePulse 0.5s infinite alternate;
+      animation: chasePulse 0.45s infinite alternate;
     }
     @keyframes chasePulse {
-      0% { box-shadow: inset 0 0 120px rgba(255, 0, 51, 0.4); }
-      100% { box-shadow: inset 0 0 230px rgba(255, 0, 51, 0.98); }
+      0% { box-shadow: inset 0 0 120px rgba(255, 0, 51, 0.5); }
+      100% { box-shadow: inset 0 0 240px rgba(255, 0, 51, 1); }
+    }
+
+    /* RAGE MODE PURPLE INFERNAL VIGNETTE */
+    #rage-vignette {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 8;
+      box-shadow: inset 0 0 160px rgba(192, 38, 211, 0);
+      transition: box-shadow 0.3s ease;
+    }
+    #rage-vignette.active {
+      animation: ragePulse 0.35s infinite alternate;
+    }
+    @keyframes ragePulse {
+      0% { box-shadow: inset 0 0 140px rgba(192, 38, 211, 0.6); }
+      100% { box-shadow: inset 0 0 250px rgba(192, 38, 211, 1); }
     }
 
     /* HOLY SHIELD CELESTIAL BLUE BORDER */
@@ -131,7 +152,7 @@
       box-shadow: inset 0 0 140px rgba(56, 189, 248, 0.65);
     }
 
-    /* STEALTH / STATUS BADGES */
+    /* STATUS BADGES */
     .status-badge-center {
       position: absolute;
       top: 2rem;
@@ -150,7 +171,7 @@
       letter-spacing: 0.12em;
     }
     #stealth-badge {
-      background: rgba(16, 185, 129, 0.18);
+      background: rgba(16, 185, 129, 0.2);
       border: 1px solid rgba(16, 185, 129, 0.5);
       color: #34d399;
     }
@@ -158,6 +179,11 @@
       background: rgba(56, 189, 248, 0.2);
       border: 1px solid rgba(56, 189, 248, 0.6);
       color: #38bdf8;
+    }
+    #climb-badge {
+      background: rgba(251, 191, 36, 0.2);
+      border: 1px solid rgba(251, 191, 36, 0.6);
+      color: #fbbf24;
     }
 
     /* CHASE BANNER */
@@ -178,8 +204,8 @@
     }
     @keyframes bannerShake {
       0% { transform: translate(-50%, -50%) rotate(0deg); }
-      50% { transform: translate(-51%, -49%) rotate(1.2deg); }
-      100% { transform: translate(-49%, -51%) rotate(-1.2deg); }
+      50% { transform: translate(-51%, -49%) rotate(1.4deg); }
+      100% { transform: translate(-49%, -51%) rotate(-1.4deg); }
     }
 
     /* FULLSCREEN SCREAMER POPUP */
@@ -336,7 +362,6 @@
       border-radius: 4px;
       transition: width 0.15s ease;
     }
-    /* HP / Cordura Bar */
     .hp-fill {
       background: linear-gradient(90deg, #dc2626, #ef4444);
       box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
@@ -349,7 +374,7 @@
       background: linear-gradient(90deg, #f59e0b, #ef4444);
     }
 
-    /* INVENTORY SLOTS (SAL BENDITA) */
+    /* INVENTORY SLOTS */
     .inventory-container {
       background: var(--panel);
       border: 1px solid var(--border);
@@ -371,7 +396,7 @@
       font-size: 0.75rem;
     }
 
-    /* PROXIMITY RADAR SENSOR */
+    /* RADAR */
     .radar-box {
       background: var(--panel);
       border: 1px solid var(--border);
@@ -444,7 +469,7 @@
     }
 
     .horror-card {
-      max-width: 560px;
+      max-width: 580px;
       width: 100%;
       background: rgba(8, 10, 16, 0.92);
       border: 1px solid rgba(255, 0, 51, 0.5);
@@ -455,7 +480,7 @@
 
     .game-title {
       font-family: 'Cinzel', serif;
-      font-size: 2.5rem;
+      font-size: 2.6rem;
       font-weight: 900;
       color: #fff;
       letter-spacing: 0.1em;
@@ -463,8 +488,11 @@
       text-shadow: 0 0 25px rgba(255, 0, 51, 0.9);
     }
     .game-sub {
-      color: #94a3b8;
-      font-size: 0.88rem;
+      color: #ff0055;
+      font-size: 0.92rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
       margin-bottom: 1.6rem;
     }
 
@@ -519,7 +547,7 @@
       color: var(--text-muted);
       display: flex;
       justify-content: center;
-      gap: 1rem;
+      gap: 0.9rem;
       flex-wrap: wrap;
     }
     .key-badge {
@@ -554,8 +582,8 @@
       }
     }
     .touch-btn {
-      width: 58px;
-      height: 58px;
+      width: 56px;
+      height: 56px;
       border-radius: 50%;
       background: rgba(10, 14, 24, 0.85);
       border: 1px solid rgba(255, 255, 255, 0.2);
@@ -582,6 +610,7 @@
   <div id="scanlines"></div>
   <div id="static-glitch"></div>
   <div id="chase-vignette"></div>
+  <div id="rage-vignette"></div>
   <div id="shield-vignette"></div>
 
   <!-- Status Badges -->
@@ -593,9 +622,13 @@
     <i class="fa-solid fa-shield-halved"></i>
     <span>Escudo Sagrado del Niño Activo</span>
   </div>
+  <div class="status-badge-center" id="climb-badge">
+    <i class="fa-solid fa-bars"></i>
+    <span>Escalando escalera [W / S]</span>
+  </div>
 
   <!-- Chase Banner -->
-  <div id="chase-banner">⚠️ ¡CORRE! ¡LA SOMBRA ESTÁ FURISOSA! ⚠️</div>
+  <div id="chase-banner">⚠️ ¡LA SOMBRA ENTRA EN FURIA EXTREMA! ⚠️</div>
 
   <!-- Jumpscare Modal -->
   <div id="screamer-modal">
@@ -624,7 +657,7 @@
       </div>
 
       <div class="status-group">
-        <!-- HP / Cordura -->
+        <!-- HP -->
         <div class="bar-container">
           <i class="fa-solid fa-heart-pulse bar-icon" style="color: #ef4444;"></i>
           <div class="bar-bg">
@@ -647,10 +680,10 @@
             <div class="bar-fill stamina-fill" id="hud-stamina"></div>
           </div>
         </div>
-        <!-- Inventory (Sal Bendita / Píldoras) -->
+        <!-- Inventory (Sal Bendita) -->
         <div class="inventory-container">
           <span class="inv-key">Q</span>
-          <span>Sal Bendita: <strong id="hud-salt" style="color: #ffd700;">1</strong></span>
+          <span>Sal Bendita: <strong id="hud-salt" style="color: #ffd700;">2</strong></span>
         </div>
         <!-- Proximity Radar -->
         <div class="radar-box">
@@ -663,10 +696,10 @@
     <!-- Bottom Status Bar -->
     <div style="display: flex; justify-content: space-between; align-items: flex-end;">
       <div style="font-size: 0.75rem; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.12em;">
-        <span>PABELLÓN 04 • ALMAS ATRAPADAS</span>
+        <span>PABELLÓN SUBTERRÁNEO • DIFICULTAD MÁXIMA</span>
       </div>
       <div style="font-size: 0.75rem; color: rgba(255,255,255,0.4); font-family: 'Space Grotesk';">
-        <span>[F] Linterna | [Shift] Correr | [E] Interactuar | [Q] Usar Sal</span>
+        <span>[ESPACIO] Saltar | [W/S] Escalar | [F] Linterna | [Shift] Correr | [Q] Sal</span>
       </div>
     </div>
   </div>
@@ -681,7 +714,8 @@
       <div class="touch-btn" id="m-down"><i class="fa-solid fa-chevron-down"></i></div>
       <div class="touch-btn" id="m-right"><i class="fa-solid fa-chevron-right"></i></div>
     </div>
-    <div style="display: flex; gap: 0.6rem; align-items: flex-end;">
+    <div style="display: flex; gap: 0.5rem; align-items: flex-end;">
+      <div class="touch-btn" id="m-jump" style="font-size: 1.1rem; color: #38bdf8;"><i class="fa-solid fa-arrow-up-from-bracket"></i></div>
       <div class="touch-btn" id="m-salt" style="font-size: 1.1rem; color: #ffd700;"><i class="fa-solid fa-shield-virus"></i></div>
       <div class="touch-btn" id="m-light" style="font-size: 1.1rem;"><i class="fa-solid fa-lightbulb"></i></div>
       <div class="touch-btn" id="m-run" style="font-size: 1.1rem;"><i class="fa-solid fa-bolt"></i></div>
@@ -693,41 +727,37 @@
   <div class="modal-screen" id="start-modal">
     <div class="horror-card">
       <div class="game-title">SILENT ASYLUM</div>
-      <p class="game-sub">Dificultad Pesadilla • Las Almas de los Niños Perdidos</p>
+      <p class="game-sub">Dificultad Máxima • Pesadilla Sangrienta</p>
 
       <div class="mechanics-grid">
         <div class="mech-item">
-          <strong>👼 1. Niños Espectrales</strong>
-          Curan tu vida (HP), recargan cordura y te otorgan un Escudo Sagrado temporal.
+          <strong>🧗 1. Escaleras y Plataformas Altas</strong>
+          Acércate a las escaleras metálicas en las paredes y pulsa W / S para trepar a pasarelas elevadas y huir del monstruo.
         </div>
         <div class="mech-item">
-          <strong>🧂 2. Sal Bendita (Tecla Q)</strong>
-          Lanza sal para aturdir y frenar en seco al monstruo durante una persecución.
+          <strong>🦘 2. Sistema de Salto (Espacio)</strong>
+          Salta obstáculos, salta desde plataformas altas o esquiva al monstruo saltando sobre escombros.
         </div>
         <div class="mech-item">
-          <strong>🕯️ 3. Altares Seguros</strong>
-          Zonas sagradas con velas donde el monstruo no puede entrar.
+          <strong>🩸 3. Reliquias de Sangre & Furia</strong>
+          Dos reliquias malditas desatan la furia extrema de La Sombra: ruge y corre a hiper-velocidad rompiendo la distancia.
         </div>
         <div class="mech-item">
-          <strong>💀 4. Dificultad Dinámica</strong>
-          Cada reliquia recogida enfurece al monstruo y aumenta permanentemente su velocidad.
-        </div>
-        <div class="mech-item" style="grid-column: span 2;">
-          <strong>🩸 5. Sistema de Salud (HP) y Rasguños</strong>
-          No mueres de 1 golpe: los ataques dañan 45 HP. ¡Puedes sobrevivir y escapar si eres rápido!
+          <strong>👼 4. Almas de Niños Protectores</strong>
+          Te curan a 100 HP, otorgan un escudo sagrado y te regalan frascos de sal bendita.
         </div>
       </div>
 
       <button class="btn-play" id="btn-start-game">
-        <i class="fa-solid fa-door-open"></i> ENTRAR AL ASILO
+        <i class="fa-solid fa-skull"></i> ENTRAR EN MODO PESADILLA
       </button>
 
       <div class="controls-help">
         <div><span class="key-badge">W A S D</span> Moverse</div>
+        <div><span class="key-badge">ESPACIO</span> Saltar / Trepar</div>
         <div><span class="key-badge">SHIFT</span> Correr</div>
         <div><span class="key-badge">F</span> Linterna</div>
         <div><span class="key-badge">Q</span> Sal Bendita</div>
-        <div><span class="key-badge">E</span> Interactuar</div>
       </div>
     </div>
   </div>
@@ -736,7 +766,7 @@
   <div class="modal-screen" id="finish-modal" style="display: none;">
     <div class="horror-card">
       <div class="game-title" id="finish-title">HAS ESCAPADO</div>
-      <p class="game-sub" id="finish-sub">Las almas de los niños te guiaron hacia la salida</p>
+      <p class="game-sub" id="finish-sub">Conquistaste la Dificultad Máxima del Asilo</p>
 
       <button class="btn-play" id="btn-play-again" style="margin-top: 1.5rem;">
         <i class="fa-solid fa-rotate-right"></i> JUGAR DE NUEVO
@@ -758,20 +788,20 @@
         this.ctx = new AudioCtx();
         this.isInit = true;
 
-        // Infrasound Sub-Drone (41Hz / 44.5Hz)
+        // Infrasound Sub-Drone (39Hz / 43.5Hz - más tétrico)
         this.droneOsc1 = this.ctx.createOscillator();
         this.droneOsc2 = this.ctx.createOscillator();
         this.droneFilter = this.ctx.createBiquadFilter();
         this.droneGain = this.ctx.createGain();
 
         this.droneOsc1.type = 'sawtooth';
-        this.droneOsc1.frequency.setValueAtTime(41, this.ctx.currentTime);
+        this.droneOsc1.frequency.setValueAtTime(39, this.ctx.currentTime);
         this.droneOsc2.type = 'sine';
-        this.droneOsc2.frequency.setValueAtTime(44.5, this.ctx.currentTime);
+        this.droneOsc2.frequency.setValueAtTime(43.5, this.ctx.currentTime);
 
         this.droneFilter.type = 'lowpass';
         this.droneFilter.frequency.setValueAtTime(130, this.ctx.currentTime);
-        this.droneGain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+        this.droneGain.gain.setValueAtTime(0.22, this.ctx.currentTime);
 
         this.droneOsc1.connect(this.droneFilter);
         this.droneOsc2.connect(this.droneFilter);
@@ -799,21 +829,20 @@
         this.chaseOsc.start();
       }
 
-      setChaseAudio(isChasing) {
+      setChaseAudio(isChasing, isRage = false) {
         if (!this.ctx) return;
         const now = this.ctx.currentTime;
         if (isChasing) {
-          this.chaseGain.gain.setTargetAtTime(0.35, now, 0.15);
-          this.droneGain.gain.setTargetAtTime(0.4, now, 0.2);
-          this.droneFilter.frequency.setTargetAtTime(320, now, 0.2);
+          this.chaseGain.gain.setTargetAtTime(isRage ? 0.45 : 0.35, now, 0.15);
+          this.droneGain.gain.setTargetAtTime(isRage ? 0.5 : 0.4, now, 0.2);
+          this.droneFilter.frequency.setTargetAtTime(isRage ? 450 : 320, now, 0.2);
         } else {
           this.chaseGain.gain.setTargetAtTime(0.001, now, 0.6);
-          this.droneGain.gain.setTargetAtTime(0.2, now, 0.5);
+          this.droneGain.gain.setTargetAtTime(0.22, now, 0.5);
           this.droneFilter.frequency.setTargetAtTime(130, now, 0.5);
         }
       }
 
-      // Music box melody when child soul helps player
       playMusicBoxMelody() {
         if (!this.ctx) return;
         const now = this.ctx.currentTime;
@@ -832,7 +861,6 @@
         });
       }
 
-      // Stun / Salt explosion sound
       playSaltStunSound() {
         if (!this.ctx) return;
         const now = this.ctx.currentTime;
@@ -849,25 +877,55 @@
         osc.stop(now + 0.5);
       }
 
-      // Monster roar
-      playMonsterRoar() {
+      playMonsterRoar(isDeepRage = false) {
         if (!this.ctx) return;
         const now = this.ctx.currentTime;
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(85, now);
-        osc.frequency.linearRampToValueAtTime(140, now + 0.3);
-        osc.frequency.linearRampToValueAtTime(55, now + 0.8);
-        gain.gain.setValueAtTime(0.35, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+        osc.frequency.setValueAtTime(isDeepRage ? 65 : 85, now);
+        osc.frequency.linearRampToValueAtTime(isDeepRage ? 160 : 140, now + 0.35);
+        osc.frequency.linearRampToValueAtTime(45, now + 1.1);
+        gain.gain.setValueAtTime(0.45, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
         osc.start(now);
-        osc.stop(now + 0.95);
+        osc.stop(now + 1.25);
       }
 
-      // Player Damage Hurt Sound
+      playJumpSound() {
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(140, now);
+        osc.frequency.exponentialRampToValueAtTime(260, now + 0.15);
+        gain.gain.setValueAtTime(0.18, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.2);
+      }
+
+      playLandSound() {
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(95, now);
+        osc.frequency.exponentialRampToValueAtTime(35, now + 0.12);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.16);
+      }
+
       playPlayerHurt() {
         if (!this.ctx) return;
         const now = this.ctx.currentTime;
@@ -927,7 +985,7 @@
           osc.frequency.setValueAtTime(freq, now);
           osc.frequency.linearRampToValueAtTime(freq * 1.8, now + 0.15);
           osc.frequency.linearRampToValueAtTime(freq * 0.4, now + 0.75);
-          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.setValueAtTime(0.28, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.85);
           osc.connect(gain);
           gain.connect(this.ctx.destination);
@@ -1007,7 +1065,7 @@
     }
   </script>
 
-  <!-- HORROR 3D GAME ENGINE WITH SPECTRAL CHILDREN & MECHANICS -->
+  <!-- HORROR 3D GAME ENGINE WITH JUMP, LADDERS AND RAGE RELICS -->
   <script>
     const audio = new NightmareAudioEngine();
 
@@ -1018,15 +1076,18 @@
 
     // Player State
     let playerPos = new THREE.Vector3(0, 1.6, 0);
+    let playerVelocityY = 0;
+    let isGrounded = true;
+    let isClimbingLadder = false;
     let playerYaw = 0;
     let playerPitch = 0;
-    let keys = { w: false, a: false, s: false, d: false, shift: false };
+    let keys = { w: false, a: false, s: false, d: false, shift: false, space: false };
     let flashlightOn = true;
     let playerHP = 100;
     let batteryLevel = 100;
     let stamina = 100;
-    let saltItems = 2; // Ítem arrojable para aturdir al monstruo
-    let holyShieldTimer = 0; // Escudo sagrado otorgado por niños
+    let saltItems = 2;
+    let holyShieldTimer = 0;
     let keysCollected = 0;
     const totalKeysNeeded = 5;
     let stepTimer = 0;
@@ -1039,13 +1100,13 @@
     const cellSize = 6;
     const maze = [
       [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-      [1,0,0,0,1,0,0,0,0,1,2,0,0,0,0,0,2,1],
+      [1,0,0,0,1,0,0,0,0,1,2,0,0,0,0,0,3,1], // 3: Reliquia de Furia
       [1,0,1,0,1,0,1,1,0,1,0,1,1,1,0,1,0,1],
       [1,0,1,0,0,0,0,1,0,0,0,0,0,1,0,1,0,1],
       [1,0,1,1,1,1,0,1,1,1,1,1,0,1,0,1,0,1],
       [1,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1],
       [1,1,1,0,0,1,1,1,0,1,0,1,1,1,1,1,0,1],
-      [1,2,1,0,1,1,0,0,0,1,0,0,0,0,0,1,0,1],
+      [1,3,1,0,1,1,0,0,0,1,0,0,0,0,0,1,0,1], // 3: Reliquia de Furia
       [1,0,1,0,0,0,0,1,1,1,1,1,0,1,0,1,0,1],
       [1,0,1,1,1,0,0,0,0,0,0,1,0,1,0,0,0,1],
       [1,0,0,0,1,0,1,1,1,1,0,1,0,1,1,1,0,1],
@@ -1059,17 +1120,22 @@
     ];
 
     const wallBoundingBoxes = [];
+    const platformBoundingBoxes = [];
+    const ladderObjects = [];
     const relicObjects = [];
     const batteryPickups = [];
     const spiritChildren = [];
     const blessedAltars = [];
 
-    // The Monster (La Sombra)
+    // The Monster (La Sombra - Dificultad Máxima)
     let monster = {
       mesh: null,
       pos: new THREE.Vector3(12 * cellSize, 1.8, 12 * cellSize),
-      baseSpeed: 3.5,
-      chaseSpeed: 6.8,
+      baseSpeed: 3.8, // Velocidad incrementada
+      chaseSpeed: 7.4, // Sprint frenético
+      rageSpeed: 8.9, // Modo Furia Extrema
+      isRaging: false,
+      rageTimer: 0,
       stunTimer: 0,
       isChasing: false,
       chaseTimer: 0,
@@ -1149,7 +1215,7 @@
     function triggerScreamer(text = "¡TE ENCONTRÓ!", duration = 850) {
       if (isScreamerActive) return;
       isScreamerActive = true;
-      cameraShake = 0.55;
+      cameraShake = 0.6;
 
       audio.playScreamerBlast();
       renderHorrorDemonFace();
@@ -1168,7 +1234,7 @@
     function init() {
       scene = new THREE.Scene();
       scene.background = new THREE.Color(0x020305);
-      scene.fog = new THREE.FogExp2(0x020305, 0.048);
+      scene.fog = new THREE.FogExp2(0x020305, 0.052);
 
       camera = new THREE.PerspectiveCamera(74, window.innerWidth / window.innerHeight, 0.1, 80);
       camera.rotation.order = 'YXZ';
@@ -1180,7 +1246,7 @@
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       document.getElementById('game-canvas').appendChild(renderer.domElement);
 
-      const ambient = new THREE.AmbientLight(0x080a12, 0.35);
+      const ambient = new THREE.AmbientLight(0x060810, 0.3);
       scene.add(ambient);
 
       // Flashlight Spotlight
@@ -1197,6 +1263,7 @@
       flashlight.target = flashlightTarget;
 
       buildLabyrinth();
+      buildLaddersAndCatwalks();
       buildMonster();
       buildSpectralChildren();
       buildBlessedAltars();
@@ -1245,16 +1312,27 @@
 
       const ceiling = new THREE.Mesh(floorGeo, floorMat);
       ceiling.rotation.x = Math.PI / 2;
-      ceiling.position.set((mapSize * cellSize) / 2, 4.2, (mapSize * cellSize) / 2);
+      ceiling.position.set((mapSize * cellSize) / 2, 5.8, (mapSize * cellSize) / 2); // Techo más alto para permitir plataformas
       scene.add(ceiling);
 
-      const wallGeo = new THREE.BoxGeometry(cellSize, 4.2, cellSize);
-      const relicMat = new THREE.MeshStandardMaterial({
+      const wallGeo = new THREE.BoxGeometry(cellSize, 5.8, cellSize);
+
+      // Reliquias Doradas Estándar
+      const relicGoldMat = new THREE.MeshStandardMaterial({
         color: 0xffd700,
         metalness: 0.9,
         roughness: 0.2,
         emissive: 0xff8800,
         emissiveIntensity: 0.5
+      });
+
+      // RELIQUIAS DE SANGRE / FURIA (Púrpura / Carmesí infernal)
+      const relicRageMat = new THREE.MeshStandardMaterial({
+        color: 0xff0044,
+        metalness: 0.95,
+        roughness: 0.15,
+        emissive: 0xc026d3,
+        emissiveIntensity: 0.8
       });
 
       for (let r = 0; r < mapSize; r++) {
@@ -1265,23 +1343,25 @@
 
           if (cell === 1) {
             const wall = new THREE.Mesh(wallGeo, wallMat);
-            wall.position.set(x, 2.1, z);
+            wall.position.set(x, 2.9, z);
             wall.castShadow = true;
             wall.receiveShadow = true;
             scene.add(wall);
             wallBoundingBoxes.push(new THREE.Box3().setFromObject(wall));
-          } else if (cell === 2) {
+          } else if (cell === 2 || cell === 3) {
+            // Relic Spawn (2: Normal Dorada, 3: Reliquia de Furia)
+            const isRage = cell === 3;
             const relicGroup = new THREE.Group();
             relicGroup.position.set(x, 1.2, z);
 
-            const relicMesh = new THREE.Mesh(new THREE.DodecahedronGeometry(0.4), relicMat);
+            const relicMesh = new THREE.Mesh(new THREE.DodecahedronGeometry(0.42), isRage ? relicRageMat : relicGoldMat);
             relicGroup.add(relicMesh);
 
-            const relicLight = new THREE.PointLight(0xffaa00, 1.4, 6);
+            const relicLight = new THREE.PointLight(isRage ? 0xc026d3 : 0xffaa00, 1.6, 6);
             relicGroup.add(relicLight);
 
             scene.add(relicGroup);
-            relicObjects.push({ group: relicGroup, mesh: relicMesh, collected: false });
+            relicObjects.push({ group: relicGroup, mesh: relicMesh, collected: false, isRageRelic: isRage });
           }
         }
       }
@@ -1313,9 +1393,60 @@
       playerPos.set(1 * cellSize + cellSize / 2, 1.6, 1 * cellSize + cellSize / 2);
     }
 
-    // --- NUEVO: NIÑOS ESPECTRALES (ALMAS QUE CURAN Y PROTEGEN) ---
+    // --- NUEVO: ESCALERAS 3D Y PASARELAS ELEVADAS (CATWALKS) ---
+    function buildLaddersAndCatwalks() {
+      // 2 Pasarelas elevadas accesibles por escaleras
+      const platformConfigs = [
+        { x: 5 * cellSize + cellSize / 2, z: 5 * cellSize + cellSize / 2, w: 5, d: 5, y: 2.8 },
+        { x: 12 * cellSize + cellSize / 2, z: 9 * cellSize + cellSize / 2, w: 5, d: 5, y: 2.8 }
+      ];
+
+      const platMat = new THREE.MeshStandardMaterial({ color: 0x27272a, roughness: 0.85, metalness: 0.3 });
+      const railMat = new THREE.MeshStandardMaterial({ color: 0x52525b, roughness: 0.6, metalness: 0.7 });
+
+      platformConfigs.forEach(plat => {
+        // Plataforma elevada
+        const platMesh = new THREE.Mesh(new THREE.BoxGeometry(plat.w, 0.3, plat.d), platMat);
+        platMesh.position.set(plat.x, plat.y, plat.z);
+        platMesh.castShadow = true;
+        platMesh.receiveShadow = true;
+        scene.add(platMesh);
+
+        platformBoundingBoxes.push(new THREE.Box3().setFromObject(platMesh));
+
+        // Escalera metálica vertical adherida a un lateral
+        const ladderGroup = new THREE.Group();
+        ladderGroup.position.set(plat.x, 0, plat.z + plat.d / 2 + 0.15);
+
+        // Rieles verticales
+        const r1 = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, plat.y + 0.5), railMat);
+        r1.position.set(-0.45, (plat.y + 0.5) / 2, 0);
+        ladderGroup.add(r1);
+
+        const r2 = r1.clone();
+        r2.position.x = 0.45;
+        ladderGroup.add(r2);
+
+        // Peldaños
+        for (let py = 0.4; py <= plat.y + 0.3; py += 0.35) {
+          const rung = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.9), railMat);
+          rung.rotation.z = Math.PI / 2;
+          rung.position.set(0, py, 0);
+          ladderGroup.add(rung);
+        }
+
+        scene.add(ladderGroup);
+        ladderObjects.push({
+          pos: ladderGroup.position,
+          maxY: plat.y + 1.6,
+          minY: 1.6,
+          radius: 1.5
+        });
+      });
+    }
+
+    // NIÑOS ESPECTRALES
     function buildSpectralChildren() {
-      // 2 Niños espectrales en salas seguras
       const childSpawns = [
         [4 * cellSize + cellSize / 2, 8 * cellSize + cellSize / 2],
         [11 * cellSize + cellSize / 2, 14 * cellSize + cellSize / 2]
@@ -1330,11 +1461,10 @@
         roughness: 0.3
       });
 
-      childSpawns.forEach((loc, idx) => {
+      childSpawns.forEach((loc) => {
         const cg = new THREE.Group();
         cg.position.set(loc[0], 1.1, loc[1]);
 
-        // Cabeza y cuerpo infantil
         const head = new THREE.Mesh(new THREE.SphereGeometry(0.25, 12, 12), spiritMat);
         head.position.y = 0.55;
         cg.add(head);
@@ -1343,13 +1473,11 @@
         body.position.y = 0.1;
         cg.add(body);
 
-        // Halo celestial
         const halo = new THREE.Mesh(new THREE.TorusGeometry(0.22, 0.03, 8, 24), new THREE.MeshBasicMaterial({ color: 0xffffff }));
         halo.rotation.x = Math.PI / 2;
         halo.position.y = 0.85;
         cg.add(halo);
 
-        // Luz tenue celestial
         const clight = new THREE.PointLight(0x38bdf8, 1.6, 7);
         clight.position.set(0, 0.4, 0);
         cg.add(clight);
@@ -1360,13 +1488,12 @@
           head: head,
           halo: halo,
           initialY: 1.1,
-          blessedGiven: false,
           cooldownTimer: 0
         });
       });
     }
 
-    // --- NUEVO: ALTARES SAGRADOS CON VELAS (ZONAS SEGURAS) ---
+    // ALTARES DE VELAS
     function buildBlessedAltars() {
       const altarSpawns = [
         [7 * cellSize + cellSize / 2, 3 * cellSize + cellSize / 2],
@@ -1381,12 +1508,10 @@
         const ag = new THREE.Group();
         ag.position.set(loc[0], 0, loc[1]);
 
-        // Pedestal de piedra
         const ped = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.9, 0.8, 16), pedMat);
         ped.position.y = 0.4;
         ag.add(ped);
 
-        // 3 Velas benditas
         for (let i = 0; i < 3; i++) {
           const angle = (i / 3) * Math.PI * 2;
           const cx = Math.cos(angle) * 0.45;
@@ -1449,7 +1574,7 @@
       scene.add(monster.mesh);
     }
 
-    // --- CONTROLS & FLASHLIGHT TOGGLE ---
+    // --- CONTROLS & JUMP / CLIMB BINDINGS ---
     function setupControls() {
       const canvas = document.getElementById('game-canvas');
 
@@ -1474,6 +1599,10 @@
         if (e.key === 'a' || e.key === 'A') keys.a = true;
         if (e.key === 'd' || e.key === 'D') keys.d = true;
         if (e.key === 'Shift') keys.shift = true;
+        if (e.key === ' ' || e.code === 'Space') {
+          e.preventDefault();
+          triggerJump();
+        }
         if (e.key === 'f' || e.key === 'F') toggleFlashlight();
         if (e.key === 'q' || e.key === 'Q') useSaltStun();
         if (e.key === 'e' || e.key === 'E') checkInteractAction();
@@ -1492,6 +1621,7 @@
       setupMobileBtn('m-left', 'a');
       setupMobileBtn('m-right', 'd');
       setupMobileBtn('m-run', 'shift');
+      document.getElementById('m-jump').addEventListener('click', triggerJump);
       document.getElementById('m-light').addEventListener('click', toggleFlashlight);
       document.getElementById('m-salt').addEventListener('click', useSaltStun);
       document.getElementById('m-action').addEventListener('click', checkInteractAction);
@@ -1516,10 +1646,18 @@
       el.addEventListener('touchend', (e) => { e.preventDefault(); keys[key] = false; });
     }
 
+    // --- NUEVO: FÍSICA DE SALTO ---
+    function triggerJump() {
+      if (isGrounded && !isClimbingLadder) {
+        playerVelocityY = 6.4; // Impulso de salto vertical
+        isGrounded = false;
+        audio.playJumpSound();
+      }
+    }
+
     function toggleFlashlight() {
       flashlightOn = !flashlightOn;
       flashlight.visible = flashlightOn;
-      
       const icon = document.getElementById('flashlight-icon');
       if (flashlightOn) {
         flashlight.intensity = 3.6;
@@ -1528,30 +1666,26 @@
         flashlight.intensity = 0;
         icon.classList.remove('active');
       }
-
       audio.playFlashlightClick();
     }
 
-    // MECÁNICA: USAR SAL BENDITA (ATURDIR MONSTRUO)
     function useSaltStun() {
       if (saltItems <= 0) return;
       saltItems--;
       document.getElementById('hud-salt').textContent = saltItems;
       audio.playSaltStunSound();
 
-      // Aturde al monstruo si está persiguiendo o cerca
       const dist = playerPos.distanceTo(monster.pos);
       if (dist < 18) {
-        monster.stunTimer = 4.5; // 4.5 segundos de aturdimiento total
+        monster.stunTimer = 4.5;
         monster.isChasing = false;
         audio.playMonsterRoar();
         stopChase();
       }
     }
 
-    // CHECK INTERACTION (RELIQUIAS, BATERÍAS Y NIÑOS ESPECTRALES)
     function checkInteractAction() {
-      // 1. Reliquias
+      // 1. Reliquias (Normales y de Furia Extrema)
       relicObjects.forEach(relic => {
         if (!relic.collected) {
           const dist = playerPos.distanceTo(relic.group.position);
@@ -1562,12 +1696,17 @@
             document.getElementById('hud-keys').textContent = keysCollected;
             audio.playPickupRelic();
 
-            // AUMENTO DE DIFICULTAD: El monstruo se vuelve más rápido con cada reliquia
-            monster.baseSpeed += 0.35;
-            monster.chaseSpeed += 0.55;
-
-            triggerScreamer("¡LA MALDICIÓN SE INTENSIFICA!", 950);
-            startEnragedChase();
+            if (relic.isRageRelic) {
+              // RELIQUIA DE FURIA SANGRIENTA
+              triggerScreamer("¡RELIQUIA DE SANGRE! ¡FURIA MÁXIMA DESATADA!", 1100);
+              startMonsterExtremeRage();
+            } else {
+              // Reliquia dorada normal
+              monster.baseSpeed += 0.35;
+              monster.chaseSpeed += 0.55;
+              triggerScreamer("¡LA MALDICIÓN SE INTENSIFICA!", 900);
+              startEnragedChase();
+            }
 
             if (keysCollected >= totalKeysNeeded) {
               triggerVictory();
@@ -1591,14 +1730,14 @@
         }
       });
 
-      // 3. Niños Espectrales (Bendición & Curación)
+      // 3. Niños Espectrales
       spiritChildren.forEach(child => {
         const dist = playerPos.distanceTo(child.group.position);
         if (dist < 3.5 && child.cooldownTimer <= 0) {
-          child.cooldownTimer = 25; // Cooldown de 25 segundos
-          playerHP = 100; // Curación completa de vida y cordura
-          holyShieldTimer = 15; // 15 segundos de escudo sagrado
-          saltItems = Math.min(3, saltItems + 1); // Regala 1 frasco de sal bendita
+          child.cooldownTimer = 25;
+          playerHP = 100;
+          holyShieldTimer = 15;
+          saltItems = Math.min(3, saltItems + 1);
           document.getElementById('hud-salt').textContent = saltItems;
           updateHPDisplay();
 
@@ -1617,16 +1756,30 @@
     function startEnragedChase() {
       monster.isChasing = true;
       monster.chaseTimer = 16;
-      audio.setChaseAudio(true);
+      audio.setChaseAudio(true, false);
       document.getElementById('chase-banner').style.display = 'block';
       document.getElementById('chase-vignette').classList.add('active');
     }
 
+    // FURIA MÁXIMA DESATADA (RELIQUIAS DE SANGRE)
+    function startMonsterExtremeRage() {
+      monster.isRaging = true;
+      monster.rageTimer = 20; // 20 segundos de hiper-persecución mortal
+      monster.isChasing = true;
+      audio.playMonsterRoar(true);
+      audio.setChaseAudio(true, true);
+      document.getElementById('chase-banner').textContent = "⚠️ ¡FURIA ANCESTRAL! ¡CORRE POR TU VIDA! ⚠️";
+      document.getElementById('chase-banner').style.display = 'block';
+      document.getElementById('rage-vignette').classList.add('active');
+    }
+
     function stopChase() {
       monster.isChasing = false;
+      monster.isRaging = false;
       audio.setChaseAudio(false);
       document.getElementById('chase-banner').style.display = 'none';
       document.getElementById('chase-vignette').classList.remove('active');
+      document.getElementById('rage-vignette').classList.remove('active');
     }
 
     function resetGame() {
@@ -1639,6 +1792,9 @@
       flashlightOn = true;
       flashlight.visible = true;
       flashlight.intensity = 3.6;
+      playerVelocityY = 0;
+      isGrounded = true;
+      isClimbingLadder = false;
       document.getElementById('flashlight-icon').classList.add('active');
       document.getElementById('hud-keys').textContent = 0;
       document.getElementById('hud-salt').textContent = 2;
@@ -1646,12 +1802,13 @@
       document.getElementById('hud-battery-text').textContent = '100%';
       document.getElementById('shield-badge').style.display = 'none';
       document.getElementById('shield-vignette').classList.remove('active');
+      document.getElementById('rage-vignette').classList.remove('active');
       updateHPDisplay();
 
       playerPos.set(1 * cellSize + cellSize / 2, 1.6, 1 * cellSize + cellSize / 2);
       monster.pos.set(12 * cellSize, 1.8, 12 * cellSize);
-      monster.baseSpeed = 3.5;
-      monster.chaseSpeed = 6.8;
+      monster.baseSpeed = 3.8;
+      monster.chaseSpeed = 7.4;
       stopChase();
 
       relicObjects.forEach(r => {
@@ -1676,9 +1833,9 @@
       stopChase();
       document.exitPointerLock();
       const modal = document.getElementById('finish-modal');
-      document.getElementById('finish-title').textContent = '¡HAS ESCAPADO!';
+      document.getElementById('finish-title').textContent = '¡VICTORIA ABSOLUTA!';
       document.getElementById('finish-title').style.color = '#ffd700';
-      document.getElementById('finish-sub').textContent = 'Las almas de los niños te protegieron y escapaste del Asilo con vida.';
+      document.getElementById('finish-sub').textContent = '¡Superaste el Modo Pesadilla y escapaste con todas las reliquias!';
       modal.style.display = 'flex';
       audio.playPickupRelic();
     }
@@ -1687,13 +1844,13 @@
       isPlaying = false;
       stopChase();
       document.exitPointerLock();
-      triggerScreamer("† TE ATRAPÓ †", 1800);
+      triggerScreamer("† TE DESTRUYÓ †", 1800);
 
       setTimeout(() => {
         const modal = document.getElementById('finish-modal');
-        document.getElementById('finish-title').textContent = 'NO LOGRASTE ESCAPAR';
+        document.getElementById('finish-title').textContent = 'PESADILLA ETERNA';
         document.getElementById('finish-title').style.color = '#ff0033';
-        document.getElementById('finish-sub').textContent = 'Tu cordura y cuerpo sucumbieron ante la Sombra...';
+        document.getElementById('finish-sub').textContent = 'La Sombra consumió tu alma en la máxima dificultad...';
         modal.style.display = 'flex';
       }, 1900);
     }
@@ -1709,7 +1866,7 @@
       globalTime += delta;
 
       if (isPlaying) {
-        updatePlayerMovement(delta);
+        updatePlayerPhysics(delta);
         updateFlashlight(delta);
         updateMonsterAI(delta);
         updateEntities(delta);
@@ -1719,7 +1876,62 @@
       renderer.render(scene, camera);
     }
 
-    function updatePlayerMovement(delta) {
+    // --- FÍSICA DE MOVIMIENTO, SALTO Y ESCALERAS ---
+    function updatePlayerPhysics(delta) {
+      // 1. Detectar si está cerca de una escalera
+      let nearLadder = null;
+      ladderObjects.forEach(lad => {
+        const d = new THREE.Vector2(playerPos.x - lad.pos.x, playerPos.z - lad.pos.z).length();
+        if (d < lad.radius) nearLadder = lad;
+      });
+
+      const climbBadge = document.getElementById('climb-badge');
+      if (nearLadder) {
+        climbBadge.style.display = 'flex';
+        // Subir o bajar por la escalera
+        if (keys.w) {
+          isClimbingLadder = true;
+          playerPos.y = Math.min(nearLadder.maxY, playerPos.y + 3.8 * delta);
+          playerVelocityY = 0;
+        } else if (keys.s) {
+          isClimbingLadder = true;
+          playerPos.y = Math.max(nearLadder.minY, playerPos.y - 3.8 * delta);
+          playerVelocityY = 0;
+        }
+      } else {
+        climbBadge.style.display = 'none';
+        isClimbingLadder = false;
+      }
+
+      // 2. Gravedad y Salto (cuando no está trepando)
+      if (!isClimbingLadder) {
+        playerVelocityY -= 17.5 * delta; // Gravedad
+        playerPos.y += playerVelocityY * delta;
+
+        // Comprobar suelo base
+        let targetFloorY = 1.6;
+
+        // Comprobar si aterriza sobre plataformas elevadas
+        platformBoundingBoxes.forEach(pbox => {
+          if (playerPos.x >= pbox.min.x - 0.3 && playerPos.x <= pbox.max.x + 0.3 &&
+              playerPos.z >= pbox.min.z - 0.3 && playerPos.z <= pbox.max.z + 0.3) {
+            if (playerPos.y >= pbox.max.y + 1.2) {
+              targetFloorY = Math.max(targetFloorY, pbox.max.y + 1.6);
+            }
+          }
+        });
+
+        if (playerPos.y <= targetFloorY) {
+          if (!isGrounded && playerVelocityY < -3) audio.playLandSound();
+          playerPos.y = targetFloorY;
+          playerVelocityY = 0;
+          isGrounded = true;
+        } else {
+          isGrounded = false;
+        }
+      }
+
+      // 3. Movimiento horizontal
       let speed = 4.2;
       const isRunning = keys.shift && stamina > 5 && (keys.w || keys.a || keys.s || keys.d);
 
@@ -1735,12 +1947,12 @@
       const right = new THREE.Vector3(Math.cos(playerYaw), 0, -Math.sin(playerYaw));
 
       const moveDir = new THREE.Vector3();
-      if (keys.w) moveDir.add(forward);
-      if (keys.s) moveDir.sub(forward);
+      if (keys.w && !isClimbingLadder) moveDir.add(forward);
+      if (keys.s && !isClimbingLadder) moveDir.sub(forward);
       if (keys.d) moveDir.add(right);
       if (keys.a) moveDir.sub(right);
 
-      if (moveDir.lengthSq() > 0) {
+      if (moveDir.lengthSq() > 0 && isGrounded) {
         moveDir.normalize();
         stepTimer += delta * (isRunning ? 1.8 : 1.0);
         if (stepTimer > 0.42) {
@@ -1756,7 +1968,7 @@
       if (!isCollidingWithWalls(nextX, playerPos.z, pRadius)) playerPos.x = nextX;
       if (!isCollidingWithWalls(playerPos.x, nextZ, pRadius)) playerPos.z = nextZ;
 
-      let bobY = moveDir.lengthSq() > 0 ? Math.sin(globalTime * (isRunning ? 15 : 9)) * 0.06 : 0;
+      let bobY = (moveDir.lengthSq() > 0 && isGrounded) ? Math.sin(globalTime * (isRunning ? 15 : 9)) * 0.06 : 0;
       let shakeX = (Math.random() - 0.5) * cameraShake;
       let shakeY = (Math.random() - 0.5) * cameraShake;
       cameraShake = Math.max(0, cameraShake - delta * 1.5);
@@ -1765,14 +1977,13 @@
       camera.rotation.y = playerYaw;
       camera.rotation.x = playerPitch;
 
-      // Invulnerability frame decay
       if (hitInvulnerability > 0) hitInvulnerability -= delta;
     }
 
     function isCollidingWithWalls(x, z, radius) {
       const pBox = new THREE.Box3(
         new THREE.Vector3(x - radius, 0, z - radius),
-        new THREE.Vector3(x + radius, 3.5, z + radius)
+        new THREE.Vector3(x + radius, 4.5, z + radius)
       );
       for (let i = 0; i < wallBoundingBoxes.length; i++) {
         if (pBox.intersectsBox(wallBoundingBoxes[i])) return true;
@@ -1782,7 +1993,7 @@
 
     function updateFlashlight(delta) {
       if (flashlightOn) {
-        batteryLevel = Math.max(0, batteryLevel - delta * 0.55);
+        batteryLevel = Math.max(0, batteryLevel - delta * 0.6); // Dificultad máxima: drena ligeramente más rápido
         document.getElementById('hud-battery').style.width = `${batteryLevel}%`;
         document.getElementById('hud-battery-text').textContent = `${Math.round(batteryLevel)}%`;
 
@@ -1790,7 +2001,7 @@
           flashlight.intensity = 0;
           document.getElementById('flashlight-icon').classList.remove('active');
         } else if (batteryLevel < 20 || monster.isChasing) {
-          if (Math.random() < (monster.isChasing ? 0.15 : 0.07)) {
+          if (Math.random() < (monster.isRaging ? 0.25 : (monster.isChasing ? 0.15 : 0.07))) {
             flashlight.intensity = Math.random() * 1.2;
           } else {
             flashlight.intensity = 3.6;
@@ -1807,100 +2018,103 @@
       flashlightTarget.position.copy(camera.position).add(lookDir.multiplyScalar(15));
     }
 
-    // --- MONSTER CHASE & HP DAMAGE SYSTEM ---
+    // --- MONSTER CHASE, RAGE & ATTACK SYSTEM ---
     function updateMonsterAI(delta) {
       const distToPlayer = monster.pos.distanceTo(playerPos);
       const staticEl = document.getElementById('static-glitch');
       const stealthBadge = document.getElementById('stealth-badge');
 
-      // Check if player is inside blessed safe altar
       let isInsideBlessedAltar = false;
       blessedAltars.forEach(altar => {
-        if (playerPos.distanceTo(altar.group.position) < altar.radius) {
-          isInsideBlessedAltar = true;
-        }
+        if (playerPos.distanceTo(altar.group.position) < altar.radius) isInsideBlessedAltar = true;
       });
 
-      // Monster Stun check
       if (monster.stunTimer > 0) {
         monster.stunTimer -= delta;
         monster.mesh.rotation.y += delta * 5;
         return;
       }
 
-      // Stealth check
       const isStealthed = !flashlightOn && !keys.shift;
-      if (isStealthed && distToPlayer > 3.5) {
+      if (isStealthed && distToPlayer > 3.5 && !monster.isRaging) {
         stealthBadge.style.display = 'flex';
       } else {
         stealthBadge.style.display = 'none';
       }
 
       // Heartbeat pulse frequency
-      if (distToPlayer < 28) {
-        const prox = Math.max(0, 1 - (distToPlayer / 28));
-        staticEl.style.opacity = (prox * 0.85).toString();
+      if (distToPlayer < 30) {
+        const prox = Math.max(0, 1 - (distToPlayer / 30));
+        staticEl.style.opacity = (prox * (monster.isRaging ? 0.95 : 0.85)).toString();
 
         heartbeatTimer += delta;
-        const beatInterval = monster.isChasing ? 0.35 : (0.9 - prox * 0.55);
+        const beatInterval = monster.isRaging ? 0.22 : (monster.isChasing ? 0.35 : (0.85 - prox * 0.55));
         if (heartbeatTimer > beatInterval) {
           heartbeatTimer = 0;
-          audio.playHeartbeat(prox * (monster.isChasing ? 1.4 : 1.0));
+          audio.playHeartbeat(prox * (monster.isRaging ? 1.6 : (monster.isChasing ? 1.4 : 1.0)));
         }
       } else {
         staticEl.style.opacity = '0';
       }
 
-      // Spot player
-      if (distToPlayer < 18 && (flashlightOn || keys.shift) && !isInsideBlessedAltar) {
-        if (!monster.isChasing) {
-          startEnragedChase();
-        }
+      // Oído ultra agudo en dificultad máxima: correr a 24m alerta al monstruo
+      if (distToPlayer < 24 && keys.shift && !isInsideBlessedAltar) {
+        if (!monster.isChasing) startEnragedChase();
       }
 
-      // Flailing arms animation
+      if (distToPlayer < 19 && flashlightOn && !isInsideBlessedAltar) {
+        if (!monster.isChasing) startEnragedChase();
+      }
+
       if (monster.armL && monster.armR) {
-        const armSwing = Math.sin(globalTime * (monster.isChasing ? 18 : 6)) * 0.6;
+        const armSwing = Math.sin(globalTime * (monster.isRaging ? 24 : (monster.isChasing ? 18 : 6))) * 0.65;
         monster.armL.rotation.x = armSwing;
         monster.armR.rotation.x = -armSwing;
+      }
+
+      // MODO FURIA ACTIVO (RELIQUIA DE SANGRE)
+      if (monster.isRaging) {
+        monster.rageTimer -= delta;
+        if (monster.rageTimer <= 0) {
+          monster.isRaging = false;
+          document.getElementById('rage-vignette').classList.remove('active');
+        }
       }
 
       if (monster.isChasing) {
         monster.chaseTimer -= delta;
 
-        // If player enters blessed altar, monster cannot enter!
         if (isInsideBlessedAltar) {
           stopChase();
           return;
         }
 
-        if (isStealthed && distToPlayer > 9.5) {
+        if (isStealthed && distToPlayer > 10.5 && !monster.isRaging) {
           stopChase();
-        } else if (monster.chaseTimer <= 0 && distToPlayer > 18) {
+        } else if (monster.chaseTimer <= 0 && distToPlayer > 19 && !monster.isRaging) {
           stopChase();
         }
 
+        const currentChaseSpeed = monster.isRaging ? monster.rageSpeed : monster.chaseSpeed;
         const dir = playerPos.clone().sub(monster.pos).setY(0).normalize();
-        monster.pos.add(dir.multiplyScalar(monster.chaseSpeed * delta));
+        monster.pos.add(dir.multiplyScalar(currentChaseSpeed * delta));
         monster.mesh.lookAt(playerPos.x, monster.pos.y, playerPos.z);
 
-        // ATTACK PLAYER / DAMAGE HP
+        // ATACAR AL JUGADOR (daño a HP)
         if (distToPlayer < 1.45 && hitInvulnerability <= 0) {
-          hitInvulnerability = 1.2; // 1.2s i-frames
-          cameraShake = 0.45;
+          hitInvulnerability = 1.2;
+          cameraShake = 0.55;
 
-          // Holy Shield absorbs hit
           if (holyShieldTimer > 0) {
             holyShieldTimer = 0;
-            monster.stunTimer = 3.0; // Repels and stuns monster!
+            monster.stunTimer = 3.2;
             audio.playMonsterRoar();
             document.getElementById('shield-badge').style.display = 'none';
             document.getElementById('shield-vignette').classList.remove('active');
-            triggerScreamer("¡EL ESCUDO SAGRADO TE SALVÓ!", 750);
+            triggerScreamer("¡EL ESCUDO SAGRADO TE SALVÓ!", 800);
             return;
           }
 
-          // Damage HP
           playerHP -= 45;
           updateHPDisplay();
           audio.playPlayerHurt();
@@ -1909,9 +2123,8 @@
             triggerCaughtGameOver();
             return;
           } else {
-            // Knockback player slightly
-            triggerScreamer("¡TE RASGUÑÓ! ¡HUYE!", 600);
-            monster.stunTimer = 1.2; // Breve pausa tras atacar
+            triggerScreamer("¡TE RASGUÑÓ! ¡SALTA Y CORRE!", 650);
+            monster.stunTimer = 1.1;
           }
         }
       } else {
@@ -1930,29 +2143,25 @@
     }
 
     function updateEntities(delta) {
-      // Relics
       relicObjects.forEach(r => {
         if (!r.collected) {
-          r.mesh.rotation.y += delta * 1.6;
+          r.mesh.rotation.y += delta * (r.isRageRelic ? 2.8 : 1.6);
           r.mesh.rotation.x += delta * 0.8;
         }
       });
 
-      // Batteries
       batteryPickups.forEach(b => {
         if (!b.collected) {
           b.group.rotation.y += delta * 2.0;
         }
       });
 
-      // Spectral Children Hovering Animation
       spiritChildren.forEach(child => {
         child.group.position.y = child.initialY + Math.sin(globalTime * 2.5) * 0.12;
         child.halo.rotation.z += delta * 1.5;
         if (child.cooldownTimer > 0) child.cooldownTimer -= delta;
       });
 
-      // Holy Shield Timer
       if (holyShieldTimer > 0) {
         holyShieldTimer -= delta;
         if (holyShieldTimer <= 0) {
@@ -1962,10 +2171,10 @@
       }
     }
 
-    // --- PROXIMITY RADAR & PROMPT DETECTION ---
     function checkPromptsAndRadar() {
       let nearestRelicDist = Infinity;
       let isNearRelic = false;
+      let isNearRageRelic = false;
       let isNearBattery = false;
       let isNearChild = false;
       const crosshair = document.getElementById('crosshair');
@@ -1974,7 +2183,10 @@
         if (!r.collected) {
           const d = playerPos.distanceTo(r.group.position);
           if (d < nearestRelicDist) nearestRelicDist = d;
-          if (d < 3.2) isNearRelic = true;
+          if (d < 3.2) {
+            isNearRelic = true;
+            if (r.isRageRelic) isNearRageRelic = true;
+          }
         }
       });
 
@@ -1990,7 +2202,6 @@
         if (d < 3.5) isNearChild = true;
       });
 
-      // Proximity Radar
       const radarText = document.getElementById('radar-text');
       const radarDot = document.getElementById('radar-dot');
 
@@ -2011,16 +2222,15 @@
         radarDot.style.boxShadow = '0 0 6px #10b981';
       }
 
-      // Interaction Prompts
       const prompt = document.getElementById('interact-prompt');
       const promptText = document.getElementById('prompt-text');
 
       if (isNearChild) {
-        promptText.textContent = "Recibir Bendición & Curación del Niño";
+        promptText.textContent = "Recibir Bendición del Niño (+Vida & Escudo)";
         prompt.style.display = 'flex';
         crosshair.classList.add('active');
       } else if (isNearRelic) {
-        promptText.textContent = "Recoger Reliquia Maldita";
+        promptText.textContent = isNearRageRelic ? "⚠️ Recoger Reliquia de Sangre (DESATA FURIA)" : "Recoger Reliquia Maldita";
         prompt.style.display = 'flex';
         crosshair.classList.add('active');
       } else if (isNearBattery) {
