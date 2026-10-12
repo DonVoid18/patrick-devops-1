@@ -3,204 +3,1231 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Práctica DevOps - Despliegue CI/CD</title>
+  <title>Vortex 3D Sneaker Lab • Visualizador Realista</title>
+  
+  <!-- Google Fonts & Lucide Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Three.js via ES Modules Import Map -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+
   <style>
     :root {
-      --bg: #0f172a;
-      --card-bg: #1e293b;
-      --text-main: #f8fafc;
+      --bg: #090a0f;
+      --card-bg: rgba(18, 22, 34, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent: #00f0ff;
+      --accent-glow: rgba(0, 240, 255, 0.35);
+      --accent-secondary: #ff0077;
+      --text: #f8fafc;
       --text-muted: #94a3b8;
-      --accent: #38bdf8;
-      --success: #22c55e;
-      --border: #334155;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      user-select: none;
     }
 
     body {
       background-color: var(--bg);
-      color: var(--text-main);
-      min-height: 100vh;
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+    }
+
+    /* 3D Canvas Canvas */
+    #canvas-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      cursor: grab;
+    }
+    #canvas-container:active {
+      cursor: grabbing;
+    }
+
+    /* Top Navigation Bar */
+    header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 1.25rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+      background: linear-gradient(180deg, rgba(9, 10, 15, 0.85) 0%, rgba(9, 10, 15, 0) 100%);
+      pointer-events: none;
+    }
+
+    .brand-group {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      color: #000;
+      font-weight: 800;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    .brand-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .brand-subtitle {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .top-actions {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .badge-server {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      color: #4ade80;
+      backdrop-filter: blur(8px);
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4ade80;
+      box-shadow: 0 0 10px #4ade80;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .btn-icon {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .btn-icon:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .btn-icon.active {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+
+    /* Left Control Dock (Camera & Views) */
+    .left-dock {
+      position: absolute;
+      top: 50%;
+      left: 2rem;
+      transform: translateY(-50%);
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .view-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 0.65rem 1rem;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      transition: all 0.25s ease;
+      text-align: left;
+    }
+    .view-btn:hover {
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateX(4px);
+    }
+    .view-btn.active {
+      color: #000;
+      background: var(--accent);
+      border-color: var(--accent);
+      box-shadow: 0 0 15px var(--accent-glow);
+      transform: translateX(6px);
+    }
+
+    /* Right Customizer Panel (Glassmorphism) */
+    .customizer-panel {
+      position: absolute;
+      right: 2rem;
+      top: 5.5rem;
+      bottom: 2rem;
+      width: 380px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 1.5rem;
+      backdrop-filter: blur(20px);
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.2) transparent;
+    }
+
+    .product-header {
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 1rem;
+    }
+    .product-tag {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+    .product-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    .product-price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-top: 0.5rem;
+    }
+    .product-price {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #fff;
+    }
+    .product-rating {
+      font-size: 0.8rem;
+      color: #fbbf24;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    /* Section Headers */
+    .section-title {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Style Variants (Official Editions) */
+    .variant-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+    .variant-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 0.75rem 0.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .variant-card:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .variant-card.active {
+      border-color: var(--accent);
+      background: rgba(0, 240, 255, 0.1);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+    }
+    .variant-preview-circle {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      margin: 0 auto 0.4rem;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+    .variant-name {
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* Color Customizer Swatches */
+    .color-swatches {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .swatch {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .swatch:hover {
+      transform: scale(1.15);
+    }
+    .swatch.active {
+      border-color: #fff;
+      transform: scale(1.15);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+
+    /* Material Finish Buttons */
+    .finish-toggle {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.4rem;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 0.3rem;
+      border-radius: 10px;
+    }
+    .finish-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.5rem 0.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .finish-btn:hover {
+      color: var(--text);
+    }
+    .finish-btn.active {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+
+    /* Lighting Environments */
+    .env-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+    .env-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 0.6rem 0.4rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+      transition: all 0.2s;
+    }
+    .env-btn:hover {
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .env-btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(0, 240, 255, 0.08);
+    }
+
+    /* Sizes */
+    .size-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.4rem;
+    }
+    .size-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 0.5rem 0;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .size-btn:hover {
+      border-color: var(--accent);
+    }
+    .size-btn.active {
+      background: var(--text);
+      color: #000;
+      border-color: var(--text);
+    }
+
+    /* Primary CTA */
+    .btn-buy {
+      background: linear-gradient(135deg, var(--accent) 0%, #0099ff 100%);
+      border: none;
+      color: #000;
+      font-weight: 800;
+      font-size: 0.95rem;
+      padding: 0.9rem;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      box-shadow: 0 0 25px var(--accent-glow);
+      transition: all 0.25s ease;
+      margin-top: auto;
+    }
+    .btn-buy:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 35px rgba(0, 240, 255, 0.5);
+    }
+
+    /* 3D Hotspot Tags in 3D Space */
+    .hotspot {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(0, 240, 255, 0.25);
+      border: 2px solid var(--accent);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: translate(-50%, -50%);
+      transition: transform 0.2s, background 0.2s;
+      z-index: 5;
+      pointer-events: auto;
+    }
+    .hotspot::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #fff;
+    }
+    .hotspot:hover {
+      transform: translate(-50%, -50%) scale(1.3);
+      background: var(--accent);
+      box-shadow: 0 0 20px var(--accent);
+    }
+
+    /* Hotspot Tooltip Modal */
+    .hotspot-card {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(18, 22, 34, 0.9);
+      border: 1px solid var(--accent);
+      border-radius: 14px;
+      padding: 1rem 1.4rem;
+      backdrop-filter: blur(20px);
+      z-index: 10;
+      display: none;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+      max-width: 450px;
+    }
+    .hotspot-card.show {
+      display: flex;
+      animation: fadeInUp 0.3s ease;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translate(-50%, 20px); }
+      to { opacity: 1; transform: translate(-50%, 0); }
+    }
+    .hotspot-card-icon {
+      font-size: 1.5rem;
+      color: var(--accent);
+    }
+    .hotspot-card-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 0.2rem;
+    }
+    .hotspot-card-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+    .hotspot-card-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      cursor: pointer;
+      margin-left: 0.5rem;
+    }
+
+    /* Loading Screen */
+    #loader {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #090a0f;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 2rem;
+      z-index: 100;
+      transition: opacity 0.6s ease;
     }
-
-    .container {
-      max-width: 800px;
-      width: 100%;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 2.5rem;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
-    }
-
-    .badge-container {
-      display: flex;
-      gap: 0.75rem;
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.85rem;
-      font-weight: 600;
-      padding: 0.35rem 0.85rem;
-      border-radius: 9999px;
-      background: rgba(56, 189, 248, 0.15);
-      color: var(--accent);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-    }
-
-    .badge.success {
-      background: rgba(34, 197, 94, 0.15);
-      color: var(--success);
-      border-color: rgba(34, 197, 94, 0.3);
-    }
-
-    .status-dot {
-      width: 8px;
-      height: 8px;
+    .spinner {
+      width: 60px;
+      height: 60px;
+      border: 3px solid rgba(0, 240, 255, 0.15);
+      border-top-color: var(--accent);
       border-radius: 50%;
-      background-color: currentColor;
-      box-shadow: 0 0 8px currentColor;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1.5rem;
     }
-
-    h1 {
-      font-size: 2.2rem;
-      font-weight: 700;
-      margin-bottom: 0.75rem;
-      background: linear-gradient(to right, #38bdf8, #818cf8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
-
-    p.subtitle {
-      color: var(--text-muted);
-      font-size: 1.05rem;
-      margin-bottom: 2rem;
-      line-height: 1.6;
-    }
-
-    .pipeline-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1.25rem;
-      margin-bottom: 2rem;
-    }
-
-    .step-card {
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.25rem;
-      transition: transform 0.2s ease, border-color 0.2s ease;
-    }
-
-    .step-card:hover {
-      transform: translateY(-2px);
-      border-color: var(--accent);
-    }
-
-    .step-number {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--accent);
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-
-    .step-title {
+    .loader-text {
+      font-family: 'Space Grotesk', sans-serif;
       font-size: 1.1rem;
       font-weight: 600;
-      margin-bottom: 0.35rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
     }
-
-    .step-desc {
-      font-size: 0.875rem;
-      color: var(--text-muted);
-      line-height: 1.4;
-    }
-
-    .info-box {
-      background: rgba(56, 189, 248, 0.08);
-      border-left: 4px solid var(--accent);
-      padding: 1rem 1.25rem;
-      border-radius: 4px 8px 8px 4px;
-      font-size: 0.95rem;
-      color: var(--text-main);
-    }
-
-    footer {
-      margin-top: 2rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .loader-progress {
       font-size: 0.85rem;
       color: var(--text-muted);
-      flex-wrap: wrap;
-      gap: 0.5rem;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+      .customizer-panel {
+        width: 320px;
+        right: 1rem;
+      }
+      .left-dock {
+        left: 1rem;
+      }
+    }
+    @media (max-width: 768px) {
+      .customizer-panel {
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 45vh;
+        border-radius: 20px 20px 0 0;
+      }
+      .left-dock {
+        display: none;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="badge-container">
-      <span class="badge success">
-        <span class="status-dot"></span>
-        Despliegue Activo
-      </span>
-      <span class="badge">Nginx Web Server</span>
-      <span class="badge">GitHub Actions CI/CD</span>
-    </div>
 
-    <h1>DevOps Practice #1</h1>
-    <p class="subtitle">
-      Página de prueba desplegada automáticamente mediante un pipeline de Integración Continua (CI) y Entrega Continua (CD).
-    </p>
-
-    <div class="pipeline-grid">
-      <div class="step-card">
-        <div class="step-number">Paso 01 • Código</div>
-        <div class="step-title">Git Push</div>
-        <div class="step-desc">Commit y subida a la rama principal (<code>main</code>).</div>
-      </div>
-
-      <div class="step-card">
-        <div class="step-number">Paso 02 • CI</div>
-        <div class="step-title">Validación</div>
-        <div class="step-desc">GitHub Actions ejecuta pruebas y verificación de archivos estáticos.</div>
-      </div>
-
-      <div class="step-card">
-        <div class="step-number">Paso 03 • CD</div>
-        <div class="step-title">Despliegue</div>
-        <div class="step-desc">Copia por SSH / rsync hacia <code>/var/www/html</code> en el servidor Nginx.</div>
-      </div>
-    </div>
-
-    <div class="info-box">
-      <strong>Estado del servidor:</strong> Servido con éxito desde Nginx. Cada cambio enviado a la rama <code>main</code> se refleja aquí automáticamente.
-    </div>
-
-    <footer>
-      <span>Proyecto: <strong>practice-1-deveops</strong></span>
-      <span id="timestamp">Cargado: <script>document.write(new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString())</script></span>
-    </footer>
+  <!-- Loading Overlay -->
+  <div id="loader">
+    <div class="spinner"></div>
+    <div class="loader-text">CARGANDO MOTOR 3D...</div>
+    <div class="loader-progress" id="loader-progress">Inicializando texturas PBR y luces</div>
   </div>
+
+  <!-- Header -->
+  <header>
+    <div class="brand-group">
+      <div class="brand-logo"><i class="fa-solid fa-shoe-prints"></i></div>
+      <div>
+        <div class="brand-title">VORTEX LAB // 3D</div>
+        <div class="brand-subtitle">Simulador PBR de Calzado • Release v2.0</div>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <div class="badge-server">
+        <span class="pulse-dot"></span>
+        <span>AWS EC2 • Nginx 1.28</span>
+      </div>
+      <button class="btn-icon" id="btn-autorotate" title="Activar/Desactivar Rotación 360°">
+        <i class="fa-solid fa-arrows-rotate"></i>
+      </button>
+      <button class="btn-icon" id="btn-wireframe" title="Modo Malla (Wireframe)">
+        <i class="fa-solid fa-cube"></i>
+      </button>
+      <button class="btn-icon" id="btn-snapshot" title="Capturar Foto HD">
+        <i class="fa-solid fa-camera"></i>
+      </button>
+      <button class="btn-icon" id="btn-fullscreen" title="Pantalla Completa">
+        <i class="fa-solid fa-expand"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Left Camera Dock -->
+  <div class="left-dock">
+    <button class="view-btn active" data-view="perspective">
+      <i class="fa-solid fa-compass"></i> Perspectiva 3/4
+    </button>
+    <button class="view-btn" data-view="side">
+      <i class="fa-solid fa-ruler-horizontal"></i> Perfil Lateral
+    </button>
+    <button class="view-btn" data-view="front">
+      <i class="fa-solid fa-arrow-up"></i> Frontal
+    </button>
+    <button class="view-btn" data-view="top">
+      <i class="fa-solid fa-arrow-down"></i> Cenital (Superior)
+    </button>
+    <button class="view-btn" data-view="bottom">
+      <i class="fa-solid fa-shoe-prints"></i> Suela (Detalle)
+    </button>
+  </div>
+
+  <!-- 3D Viewport Container -->
+  <div id="canvas-container"></div>
+
+  <!-- Hotspot Details Card -->
+  <div class="hotspot-card" id="hotspot-card">
+    <div class="hotspot-card-icon"><i class="fa-solid fa-microchip"></i></div>
+    <div>
+      <div class="hotspot-card-title" id="hotspot-title">Tecnología</div>
+      <div class="hotspot-card-desc" id="hotspot-desc">Detalles del componente</div>
+    </div>
+    <button class="hotspot-card-close" id="hotspot-close"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+
+  <!-- Right Customizer Panel -->
+  <div class="customizer-panel">
+    <div class="product-header">
+      <div class="product-tag">Edición Especial 2026</div>
+      <div class="product-name">AERO-PULSE X1</div>
+      <div class="product-price-row">
+        <div class="product-price">$169.00 USD</div>
+        <div class="product-rating">
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star-half-stroke"></i>
+          <span>(4.9)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Official Style Editions -->
+    <div>
+      <div class="section-title">
+        <span>Ediciones Oficiales</span>
+        <span style="font-size: 0.65rem; color: var(--accent);">KHR_VARIANTS</span>
+      </div>
+      <div class="variant-grid">
+        <div class="variant-card active" data-variant="street">
+          <div class="variant-preview-circle" style="background: linear-gradient(135deg, #eee 50%, #d32f2f 50%);"></div>
+          <div class="variant-name">Street</div>
+        </div>
+        <div class="variant-card" data-variant="midnight">
+          <div class="variant-preview-circle" style="background: linear-gradient(135deg, #111 50%, #333 50%);"></div>
+          <div class="variant-name">Midnight</div>
+        </div>
+        <div class="variant-card" data-variant="beach">
+          <div class="variant-preview-circle" style="background: linear-gradient(135deg, #00b4d8 50%, #f77f00 50%);"></div>
+          <div class="variant-name">Beach</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Custom Color Tints -->
+    <div>
+      <div class="section-title">
+        <span>Tinte Personalizado</span>
+        <span id="active-color-name" style="font-size: 0.7rem; color: #fff;">Original</span>
+      </div>
+      <div class="color-swatches">
+        <div class="swatch active" data-color="null" style="background: linear-gradient(135deg, #fff, #555);" title="Original"></div>
+        <div class="swatch" data-color="#00f0ff" style="background: #00f0ff;" title="Cian Neón"></div>
+        <div class="swatch" data-color="#ff0055" style="background: #ff0055;" title="Carmesí"></div>
+        <div class="swatch" data-color="#ffd000" style="background: #ffd000;" title="Volt Amarillo"></div>
+        <div class="swatch" data-color="#7928ca" style="background: #7928ca;" title="Púrpura Deep"></div>
+        <div class="swatch" data-color="#10b981" style="background: #10b981;" title="Esmeralda"></div>
+        <div class="swatch" data-color="#ff6b00" style="background: #ff6b00;" title="Naranja Ámbar"></div>
+        <div class="swatch" data-color="#222225" style="background: #222225;" title="Obsidiana"></div>
+      </div>
+    </div>
+
+    <!-- Material Finish -->
+    <div>
+      <div class="section-title">
+        <span>Acabado del Material</span>
+      </div>
+      <div class="finish-toggle">
+        <button class="finish-btn active" data-finish="normal">Original PBR</button>
+        <button class="finish-btn" data-finish="matte">Cuero Mate</button>
+        <button class="finish-btn" data-finish="metallic">Metálico Gloss</button>
+      </div>
+    </div>
+
+    <!-- Lighting Environment -->
+    <div>
+      <div class="section-title">
+        <span>Entorno de Luz</span>
+      </div>
+      <div class="env-grid">
+        <button class="env-btn active" data-env="studio">
+          <i class="fa-solid fa-lightbulb"></i>
+          <span>Estudio Pro</span>
+        </button>
+        <button class="env-btn" data-env="neon">
+          <i class="fa-solid fa-bolt"></i>
+          <span>Cyber Neón</span>
+        </button>
+        <button class="env-btn" data-env="sunset">
+          <i class="fa-solid fa-sun"></i>
+          <span>Atardecer</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Size Selector -->
+    <div>
+      <div class="section-title">
+        <span>Talla (US Men)</span>
+      </div>
+      <div class="size-grid">
+        <button class="size-btn">8.0</button>
+        <button class="size-btn">8.5</button>
+        <button class="size-btn active">9.0</button>
+        <button class="size-btn">9.5</button>
+        <button class="size-btn">10.0</button>
+      </div>
+    </div>
+
+    <!-- Purchase Button -->
+    <button class="btn-buy" id="btn-buy">
+      <i class="fa-solid fa-bag-shopping"></i>
+      <span>Añadir al Carrito • $169</span>
+    </button>
+  </div>
+
+  <!-- Three.js App Implementation -->
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+    // --- State & Variables ---
+    let scene, camera, renderer, controls;
+    let shoeModel = null;
+    let shoeMaterials = [];
+    let originalMaterialsData = [];
+    let isAutoRotating = true;
+    let isWireframe = false;
+    let dirLight, ambientLight, rimLight, keyLight;
+
+    const container = document.getElementById('canvas-container');
+    const loaderEl = document.getElementById('loader');
+    const loaderProgressEl = document.getElementById('loader-progress');
+
+    // --- Initialize Scene ---
+    function init() {
+      // 1. Scene
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x090a0f);
+      scene.fog = new THREE.FogExp2(0x090a0f, 0.15);
+
+      // 2. Camera
+      camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 100);
+      camera.position.set(2.2, 1.2, 2.5);
+
+      // 3. Renderer
+      renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, powerPreference: 'high-performance' });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.25;
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      container.appendChild(renderer.domElement);
+
+      // 4. Room Environment (PBR Reflection Map)
+      const environment = new RoomEnvironment(renderer);
+      const pmremGenerator = new THREE.PMREMGenerator(renderer);
+      pmremGenerator.compileEquirectangularShader();
+      scene.environment = pmremGenerator.fromScene(environment).texture;
+
+      // 5. Controls
+      controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+      controls.autoRotate = true;
+      controls.autoRotateSpeed = 1.5;
+      controls.minDistance = 1.0;
+      controls.maxDistance = 5.5;
+      controls.maxPolarAngle = Math.PI / 2 + 0.05; // Don't go below ground
+      controls.target.set(0, 0.25, 0);
+
+      // 6. Lighting Setup
+      setupLighting();
+
+      // 7. Ground Pedestal & Soft Contact Shadow
+      setupPedestal();
+
+      // 8. Load Shoe 3D Model
+      loadShoe();
+
+      // 9. Event Listeners
+      window.addEventListener('resize', onWindowResize);
+      setupUIEvents();
+
+      // 10. Start Render Loop
+      animate();
+    }
+
+    function setupLighting() {
+      // Ambient
+      ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+      scene.add(ambientLight);
+
+      // Main Key Light
+      keyLight = new THREE.DirectionalLight(0xffffff, 2.2);
+      keyLight.position.set(3, 4, 3);
+      keyLight.castShadow = true;
+      keyLight.shadow.mapSize.width = 2048;
+      keyLight.shadow.mapSize.height = 2048;
+      keyLight.shadow.camera.near = 0.5;
+      keyLight.shadow.camera.far = 10;
+      keyLight.shadow.bias = -0.0005;
+      scene.add(keyLight);
+
+      // Soft Rim Light (Backlight for edge highlight)
+      rimLight = new THREE.DirectionalLight(0x00f0ff, 1.4);
+      rimLight.position.set(-3, 2, -3);
+      scene.add(rimLight);
+
+      // Soft Fill Light
+      const fillLight = new THREE.PointLight(0xffffff, 0.8, 10);
+      fillLight.position.set(0, 2, 3);
+      scene.add(fillLight);
+    }
+
+    function setupPedestal() {
+      // Soft Contact Shadow Plane
+      const shadowPlaneGeo = new THREE.PlaneGeometry(3.5, 3.5);
+      // Create radial shadow gradient texture
+      const canvas = document.createElement('canvas');
+      canvas.width = 256;
+      canvas.height = 256;
+      const ctx = canvas.getContext('2d');
+      const gradient = ctx.createRadialGradient(128, 128, 10, 128, 128, 120);
+      gradient.addColorStop(0, 'rgba(0, 0, 0, 0.85)');
+      gradient.addColorStop(0.5, 'rgba(0, 0, 0, 0.4)');
+      gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, 256, 256);
+
+      const shadowTexture = new THREE.CanvasTexture(canvas);
+      const shadowMaterial = new THREE.MeshBasicMaterial({
+        map: shadowTexture,
+        transparent: true,
+        depthWrite: false,
+        opacity: 0.85
+      });
+
+      const shadowMesh = new THREE.Mesh(shadowPlaneGeo, shadowMaterial);
+      shadowMesh.rotation.x = -Math.PI / 2;
+      shadowMesh.position.y = -0.02;
+      scene.add(shadowMesh);
+
+      // High-tech circular grid ring
+      const ringGeo = new THREE.RingGeometry(1.2, 1.22, 64);
+      const ringMat = new THREE.MeshBasicMaterial({ color: 0x00f0ff, side: THREE.DoubleSide, transparent: true, opacity: 0.25 });
+      const ring = new THREE.Mesh(ringGeo, ringMat);
+      ring.rotation.x = -Math.PI / 2;
+      ring.position.y = -0.01;
+      scene.add(ring);
+    }
+
+    function loadShoe() {
+      const gltfLoader = new GLTFLoader();
+      
+      // Try local shoe.glb first, with Khronos CDN fallback
+      const localUrl = './shoe.glb';
+      const cdnFallbackUrl = 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/MaterialsVariantsShoe/glTF-Binary/MaterialsVariantsShoe.glb';
+
+      function loadModel(url, isFallback = false) {
+        loaderProgressEl.textContent = isFallback ? 'Descargando modelo 3D desde CDN...' : 'Cargando geometría 3D local...';
+        
+        gltfLoader.load(
+          url,
+          (gltf) => {
+            shoeModel = gltf.scene;
+            shoeModel.userData.gltf = gltf;
+
+            // Center and scale model
+            const box = new THREE.Box3().setFromObject(shoeModel);
+            const size = box.getSize(new THREE.Vector3());
+            const center = box.getCenter(new THREE.Vector3());
+
+            // Normalize size so it fits perfectly on screen
+            const maxDim = Math.max(size.x, size.y, size.z);
+            const targetScale = 1.6 / maxDim;
+            shoeModel.scale.setScalar(targetScale);
+
+            // Re-center so sole rests exactly above ground
+            const newBox = new THREE.Box3().setFromObject(shoeModel);
+            shoeModel.position.x = -center.x * targetScale;
+            shoeModel.position.y = -newBox.min.y + 0.05;
+            shoeModel.position.z = -center.z * targetScale;
+
+            // Traverse and configure materials & shadows
+            shoeModel.traverse((child) => {
+              if (child.isMesh) {
+                child.castShadow = true;
+                child.receiveShadow = true;
+                if (child.material) {
+                  const mat = child.material;
+                  shoeMaterials.push(mat);
+                  originalMaterialsData.push({
+                    material: mat,
+                    color: mat.color ? mat.color.clone() : new THREE.Color(0xffffff),
+                    roughness: mat.roughness,
+                    metalness: mat.metalness
+                  });
+                }
+              }
+            });
+
+            scene.add(shoeModel);
+
+            // Hide loader
+            setTimeout(() => {
+              loaderEl.style.opacity = '0';
+              setTimeout(() => loaderEl.style.display = 'none', 600);
+            }, 300);
+          },
+          (xhr) => {
+            if (xhr.lengthComputable) {
+              const percent = Math.round((xhr.loaded / xhr.total) * 100);
+              loaderProgressEl.textContent = `Descargando: ${percent}%`;
+            }
+          },
+          (error) => {
+            console.warn('Fallo al cargar modelo local, intentando CDN:', error);
+            if (!isFallback) {
+              loadModel(cdnFallbackUrl, true);
+            } else {
+              loaderProgressEl.textContent = 'Error al cargar modelo 3D.';
+            }
+          }
+        );
+      }
+
+      loadModel(localUrl);
+    }
+
+    // --- Switch Official Material Variant (KHR_materials_variants) ---
+    function selectShoeVariant(variantName) {
+      if (!shoeModel || !shoeModel.userData.gltf) return;
+      const gltf = shoeModel.userData.gltf;
+
+      // Check if gltf has material variants extension
+      shoeModel.traverse((child) => {
+        if (child.isMesh && child.userData.gltfExtensions && child.userData.gltfExtensions.KHR_materials_variants) {
+          const ext = child.userData.gltfExtensions.KHR_materials_variants;
+          const variants = gltf.parser.json.extensions.KHR_materials_variants.variants;
+          const variantIndex = variants.findIndex(v => v.name.toLowerCase() === variantName.toLowerCase());
+          
+          if (variantIndex !== -1) {
+            const mapping = ext.mappings.find(m => m.variants.includes(variantIndex));
+            if (mapping && gltf.parser.associations) {
+              gltf.parser.getDependency('material', mapping.material).then((mat) => {
+                child.material = mat;
+                child.material.needsUpdate = true;
+              });
+            }
+          }
+        }
+      });
+    }
+
+    // --- UI Controls & Interactivity ---
+    function setupUIEvents() {
+      // 1. Auto Rotate Toggle
+      const autoRotateBtn = document.getElementById('btn-autorotate');
+      autoRotateBtn.addEventListener('click', () => {
+        isAutoRotating = !isAutoRotating;
+        controls.autoRotate = isAutoRotating;
+        autoRotateBtn.classList.toggle('active', isAutoRotating);
+      });
+      autoRotateBtn.classList.add('active');
+
+      // 2. Wireframe Toggle
+      const wireframeBtn = document.getElementById('btn-wireframe');
+      wireframeBtn.addEventListener('click', () => {
+        isWireframe = !isWireframe;
+        wireframeBtn.classList.toggle('active', isWireframe);
+        shoeMaterials.forEach(mat => {
+          mat.wireframe = isWireframe;
+        });
+      });
+
+      // 3. HD Snapshot
+      const snapshotBtn = document.getElementById('btn-snapshot');
+      snapshotBtn.addEventListener('click', () => {
+        renderer.render(scene, camera);
+        const dataUrl = renderer.domElement.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.download = `VORTEX-AERO-PULSE-3D-${Date.now()}.png`;
+        link.href = dataUrl;
+        link.click();
+      });
+
+      // 4. Fullscreen Toggle
+      const fullscreenBtn = document.getElementById('btn-fullscreen');
+      fullscreenBtn.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+          document.exitFullscreen().catch(() => {});
+        }
+      });
+
+      // 5. Camera View Buttons
+      const viewButtons = document.querySelectorAll('.view-btn');
+      viewButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          viewButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const view = btn.dataset.view;
+          setCameraView(view);
+        });
+      });
+
+      // 6. Style Variants
+      const variantCards = document.querySelectorAll('.variant-card');
+      variantCards.forEach(card => {
+        card.addEventListener('click', () => {
+          variantCards.forEach(c => c.classList.remove('active'));
+          card.classList.add('active');
+          const variant = card.dataset.variant;
+          selectShoeVariant(variant);
+        });
+      });
+
+      // 7. Color Swatches
+      const swatches = document.querySelectorAll('.swatch');
+      const activeColorNameEl = document.getElementById('active-color-name');
+      swatches.forEach(swatch => {
+        swatch.addEventListener('click', () => {
+          swatches.forEach(s => s.classList.remove('active'));
+          swatch.classList.add('active');
+          const colorHex = swatch.dataset.color;
+          activeColorNameEl.textContent = swatch.title;
+
+          shoeMaterials.forEach((mat, idx) => {
+            if (colorHex === 'null') {
+              mat.color.copy(originalMaterialsData[idx].color);
+            } else {
+              mat.color.set(colorHex);
+            }
+            mat.needsUpdate = true;
+          });
+        });
+      });
+
+      // 8. Material Finish
+      const finishButtons = document.querySelectorAll('.finish-btn');
+      finishButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          finishButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const finish = btn.dataset.finish;
+
+          shoeMaterials.forEach((mat, idx) => {
+            if (finish === 'normal') {
+              mat.roughness = originalMaterialsData[idx].roughness;
+              mat.metalness = originalMaterialsData[idx].metalness;
+            } else if (finish === 'matte') {
+              mat.roughness = 0.9;
+              mat.metalness = 0.05;
+            } else if (finish === 'metallic') {
+              mat.roughness = 0.2;
+              mat.metalness = 0.85;
+            }
+            mat.needsUpdate = true;
+          });
+        });
+      });
+
+      // 9. Lighting Environment Switch
+      const envButtons = document.querySelectorAll('.env-btn');
+      envButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          envButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const env = btn.dataset.env;
+
+          if (env === 'studio') {
+            scene.background.set(0x090a0f);
+            keyLight.color.set(0xffffff);
+            rimLight.color.set(0x00f0ff);
+            renderer.toneMappingExposure = 1.25;
+          } else if (env === 'neon') {
+            scene.background.set(0x05040a);
+            keyLight.color.set(0xff0077);
+            rimLight.color.set(0x00f0ff);
+            renderer.toneMappingExposure = 1.4;
+          } else if (env === 'sunset') {
+            scene.background.set(0x1a0f0d);
+            keyLight.color.set(0xffa726);
+            rimLight.color.set(0xffd54f);
+            renderer.toneMappingExposure = 1.2;
+          }
+        });
+      });
+
+      // 10. Sizes
+      const sizeButtons = document.querySelectorAll('.size-btn');
+      sizeButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          sizeButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+        });
+      });
+
+      // 11. Buy CTA Button
+      const buyBtn = document.getElementById('btn-buy');
+      buyBtn.addEventListener('click', () => {
+        showHotspotCard(
+          '¡Añadido al Carrito con Éxito!',
+          'VORTEX AERO-PULSE X1 personalizado añadido. Total: $169.00 USD. Listo para checkout.'
+        );
+      });
+
+      // Hotspot Card Close
+      document.getElementById('hotspot-close').addEventListener('click', () => {
+        document.getElementById('hotspot-card').classList.remove('show');
+      });
+    }
+
+    // --- Smooth Camera Transitions ---
+    let targetCamPos = null;
+    let targetLookAt = new THREE.Vector3(0, 0.25, 0);
+
+    function setCameraView(view) {
+      if (view === 'perspective') {
+        targetCamPos = new THREE.Vector3(2.2, 1.2, 2.5);
+      } else if (view === 'side') {
+        targetCamPos = new THREE.Vector3(0, 0.35, 3.2);
+      } else if (view === 'front') {
+        targetCamPos = new THREE.Vector3(3.2, 0.4, 0);
+      } else if (view === 'top') {
+        targetCamPos = new THREE.Vector3(0.01, 3.4, 0.01);
+      } else if (view === 'bottom') {
+        targetCamPos = new THREE.Vector3(0, -0.6, 2.4);
+      }
+    }
+
+    function showHotspotCard(title, desc) {
+      const card = document.getElementById('hotspot-card');
+      document.getElementById('hotspot-title').textContent = title;
+      document.getElementById('hotspot-desc').textContent = desc;
+      card.classList.add('show');
+    }
+
+    function onWindowResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      // Smooth camera interpolation when switching views
+      if (targetCamPos) {
+        camera.position.lerp(targetCamPos, 0.06);
+        if (camera.position.distanceTo(targetCamPos) < 0.02) {
+          targetCamPos = null;
+        }
+      }
+
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
+    // Start application
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
 </body>
 </html>

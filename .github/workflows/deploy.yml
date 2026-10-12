@@ -41,7 +41,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT || 22 }}
-          source: "index.html"
+          source: "index.html,shoe.glb"
           target: "/var/www/html"
           overwrite: true
 
