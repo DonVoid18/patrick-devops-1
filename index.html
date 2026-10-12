@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>SILENT ASYLUM • Persecución & Jumpscares 3D</title>
+  <title>SILENT ASYLUM • Terror Psicológico & Supervivencia 3D</title>
 
   <!-- Google Fonts & Font Awesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Cinzel:wght@700;900&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Cinzel:wght@700;900&family=Plus+Jakarta+Sans:wght@400;600;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
   <!-- Three.js CDN -->
@@ -19,10 +19,11 @@
       --blood: #b30000;
       --blood-neon: #ff0033;
       --dark: #020305;
-      --panel: rgba(6, 8, 12, 0.88);
+      --panel: rgba(6, 8, 12, 0.9);
       --border: rgba(255, 0, 51, 0.25);
       --text: #e2e8f0;
       --text-muted: #64748b;
+      --accent-gold: #ffd700;
     }
 
     * {
@@ -106,11 +107,33 @@
       transition: box-shadow 0.2s ease;
     }
     #chase-vignette.active {
-      animation: chasePulse 0.55s infinite alternate;
+      animation: chasePulse 0.5s infinite alternate;
     }
     @keyframes chasePulse {
       0% { box-shadow: inset 0 0 120px rgba(255, 0, 51, 0.4); }
-      100% { box-shadow: inset 0 0 200px rgba(255, 0, 51, 0.9); }
+      100% { box-shadow: inset 0 0 220px rgba(255, 0, 51, 0.95); }
+    }
+
+    /* STEALTH / HIDDEN INDICATOR */
+    #stealth-badge {
+      position: absolute;
+      top: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(16, 185, 129, 0.18);
+      border: 1px solid rgba(16, 185, 129, 0.5);
+      border-radius: 20px;
+      padding: 0.5rem 1.4rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #34d399;
+      display: none;
+      align-items: center;
+      gap: 0.6rem;
+      backdrop-filter: blur(12px);
+      z-index: 15;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
     }
 
     /* CHASE ALARM BANNER */
@@ -131,11 +154,11 @@
     }
     @keyframes bannerShake {
       0% { transform: translate(-50%, -50%) rotate(0deg); }
-      50% { transform: translate(-51%, -49%) rotate(1deg); }
-      100% { transform: translate(-49%, -51%) rotate(-1deg); }
+      50% { transform: translate(-51%, -49%) rotate(1.2deg); }
+      100% { transform: translate(-49%, -51%) rotate(-1.2deg); }
     }
 
-    /* JUMPSCARE FULLSCREEN POPUP */
+    /* JUMPSCARE FULLSCREEN MODAL */
     #screamer-modal {
       position: absolute;
       top: 0;
@@ -156,15 +179,15 @@
       left: 0;
       width: 100%;
       height: 100%;
-      animation: screamerShake 0.06s infinite;
-      filter: contrast(220%) brightness(120%);
+      animation: screamerShake 0.05s infinite;
+      filter: contrast(240%) brightness(130%);
     }
     @keyframes screamerShake {
       0% { transform: scale(1.05) translate(0, 0); }
-      25% { transform: scale(1.15) translate(-15px, 20px); }
-      50% { transform: scale(1.0) translate(20px, -15px); }
-      75% { transform: scale(1.18) translate(-20px, -10px); }
-      100% { transform: scale(1.08) translate(10px, 15px); }
+      25% { transform: scale(1.18) translate(-20px, 25px); }
+      50% { transform: scale(1.0) translate(25px, -20px); }
+      75% { transform: scale(1.22) translate(-25px, -15px); }
+      100% { transform: scale(1.1) translate(15px, 20px); }
     }
     .screamer-text {
       position: relative;
@@ -194,8 +217,8 @@
     #crosshair.active {
       width: 14px;
       height: 14px;
-      background: #ff0055;
-      box-shadow: 0 0 15px #ff0055;
+      background: var(--accent-gold);
+      box-shadow: 0 0 15px var(--accent-gold);
     }
 
     /* HUD OVERLAY */
@@ -232,7 +255,7 @@
     }
     .obj-icon {
       font-size: 1.6rem;
-      color: #ffd700;
+      color: var(--accent-gold);
       filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.7));
     }
     .obj-title {
@@ -268,8 +291,13 @@
       width: 210px;
     }
     .bar-icon {
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       color: var(--text-muted);
+      transition: color 0.2s;
+    }
+    .bar-icon.active {
+      color: #00f0ff;
+      filter: drop-shadow(0 0 6px #00f0ff);
     }
     .bar-bg {
       flex: 1;
@@ -292,22 +320,49 @@
       background: linear-gradient(90deg, #f59e0b, #ef4444);
     }
 
+    /* PROXIMITY RADAR SENSOR */
+    .radar-box {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.4rem 0.9rem;
+      font-size: 0.78rem;
+      font-family: 'Space Grotesk', sans-serif;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      backdrop-filter: blur(12px);
+    }
+    .radar-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      animation: pulseRadar 1.5s infinite;
+    }
+    @keyframes pulseRadar {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
     /* INTERACTION PROMPT */
     .interact-prompt {
       position: absolute;
       top: 55%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(0, 0, 0, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: rgba(0, 0, 0, 0.88);
+      border: 1px solid rgba(255, 255, 255, 0.35);
       border-radius: 8px;
-      padding: 0.5rem 1.1rem;
-      font-size: 0.85rem;
+      padding: 0.55rem 1.2rem;
+      font-size: 0.88rem;
       color: #fff;
       display: none;
       align-items: center;
       gap: 0.6rem;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
       z-index: 15;
     }
     .prompt-key {
@@ -316,7 +371,7 @@
       font-weight: 800;
       padding: 0.15rem 0.5rem;
       border-radius: 4px;
-      font-size: 0.75rem;
+      font-size: 0.78rem;
     }
 
     /* MENUS */
@@ -470,6 +525,12 @@
   <div id="static-glitch"></div>
   <div id="chase-vignette"></div>
 
+  <!-- Stealth Alert Badge -->
+  <div id="stealth-badge">
+    <i class="fa-solid fa-eye-slash"></i>
+    <span>Oculto en las sombras</span>
+  </div>
+
   <!-- CHASE BANNER -->
   <div id="chase-banner">⚠️ ¡CORRE! ¡LA SOMBRA TE PERSIGUE! ⚠️</div>
 
@@ -500,24 +561,36 @@
       </div>
 
       <div class="status-group">
+        <!-- Flashlight Battery -->
         <div class="bar-container">
-          <i class="fa-solid fa-flashlight bar-icon"></i>
+          <i class="fa-solid fa-flashlight bar-icon active" id="flashlight-icon"></i>
           <div class="bar-bg">
             <div class="bar-fill battery-fill" id="hud-battery"></div>
           </div>
+          <span style="font-size: 0.7rem; font-weight: 700; color: #00f0ff;" id="hud-battery-text">100%</span>
         </div>
+        <!-- Stamina -->
         <div class="bar-container">
           <i class="fa-solid fa-person-running bar-icon"></i>
           <div class="bar-bg">
             <div class="bar-fill stamina-fill" id="hud-stamina"></div>
           </div>
         </div>
+        <!-- Proximity Radar Sensor -->
+        <div class="radar-box">
+          <span class="radar-dot" id="radar-dot"></span>
+          <span id="radar-text">Detector: Normal</span>
+        </div>
       </div>
     </div>
 
+    <!-- Bottom Status Bar -->
     <div style="display: flex; justify-content: space-between; align-items: flex-end;">
       <div style="font-size: 0.75rem; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.12em;">
         <span>PABELLÓN 04 • ASILO SANATORIUM</span>
+      </div>
+      <div style="font-size: 0.75rem; color: rgba(255,255,255,0.4); font-family: 'Space Grotesk';">
+        <span>[F] Linterna | [Shift] Correr | [E] Interactuar</span>
       </div>
     </div>
   </div>
@@ -547,7 +620,7 @@
 
       <div class="warning-box">
         <i class="fa-solid fa-skull-crossbones" style="font-size: 1.6rem; color: #ff0033;"></i>
-        <span><strong>ADVERTENCIA EXTREMA:</strong> Contiene persecuciones a alta velocidad, jumpscares violentos y audio tétrico discordante.</span>
+        <span><strong>TIPS DE SUPERVIVENCIA:</strong> Apaga la linterna (F) en esquinas oscuras para despistar al monstruo. Recoge baterías para no quedar a oscuras.</span>
       </div>
 
       <button class="btn-play" id="btn-start-game">
@@ -586,7 +659,6 @@
         this.droneOsc2 = null;
         this.droneGain = null;
         this.chaseDroneGain = null;
-        this.heartbeatTimer = null;
       }
 
       init() {
@@ -595,7 +667,7 @@
         this.ctx = new AudioCtx();
         this.isInit = true;
 
-        // 1. Infrasound Sub-Drone (41Hz / 44.5Hz)
+        // Infrasound Sub-Drone (41Hz / 44.5Hz)
         this.droneOsc1 = this.ctx.createOscillator();
         this.droneOsc2 = this.ctx.createOscillator();
         this.droneFilter = this.ctx.createBiquadFilter();
@@ -619,7 +691,7 @@
         this.droneOsc1.start();
         this.droneOsc2.start();
 
-        // 2. Chase War Horn / Siren Drone (Para aumentar la adrenalina en la persecución)
+        // Chase Siren Drone
         this.chaseOsc = this.ctx.createOscillator();
         this.chaseOsc.type = 'sawtooth';
         this.chaseOsc.frequency.setValueAtTime(65, this.ctx.currentTime);
@@ -651,7 +723,6 @@
         }
       }
 
-      // Heartbeat pulse at specified intensity
       playHeartbeat(intensity = 0.5) {
         if (!this.ctx) return;
         const now = this.ctx.currentTime;
@@ -670,7 +741,6 @@
         osc.start(now);
         osc.stop(now + 0.14);
 
-        // Dub pulse
         setTimeout(() => {
           if (!this.ctx) return;
           const t2 = this.ctx.currentTime;
@@ -688,7 +758,6 @@
         }, 150);
       }
 
-      // Piercing Screamer Audio Blast (High frequency dissonant cluster scream)
       playScreamerBlast() {
         if (!this.ctx) return;
         const now = this.ctx.currentTime;
@@ -711,7 +780,6 @@
           osc.stop(now + 0.9);
         });
 
-        // Add white noise burst for explosive impact
         const bufSize = this.ctx.sampleRate * 0.4;
         const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
         const data = buf.getChannelData(0);
@@ -726,7 +794,6 @@
         noise.start(now);
       }
 
-      // Footstep sound
       playFootstep() {
         if (!this.ctx) return;
         const now = this.ctx.currentTime;
@@ -754,13 +821,13 @@
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'square';
-        osc.frequency.setValueAtTime(1300, now);
-        gain.gain.setValueAtTime(0.15, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
+        osc.frequency.setValueAtTime(1400, now);
+        gain.gain.setValueAtTime(0.18, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.035);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
         osc.start(now);
-        osc.stop(now + 0.035);
+        osc.stop(now + 0.04);
       }
 
       playPickupRelic() {
@@ -778,6 +845,22 @@
           osc.start(now + idx * 0.08);
           osc.stop(now + idx * 0.08 + 0.65);
         });
+      }
+
+      playPickupBattery() {
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(350, now);
+        osc.frequency.exponentialRampToValueAtTime(700, now + 0.2);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.26);
       }
     }
   </script>
@@ -831,13 +914,14 @@
 
     const wallBoundingBoxes = [];
     const relicObjects = [];
+    const batteryPickups = [];
 
     // The Monster (La Sombra)
     let monster = {
       mesh: null,
       pos: new THREE.Vector3(12 * cellSize, 1.8, 12 * cellSize),
-      baseSpeed: 3.4,
-      chaseSpeed: 6.8, // ALTA VELOCIDAD EN PERSECUCIÓN
+      baseSpeed: 3.2,
+      chaseSpeed: 6.4,
       isChasing: false,
       chaseTimer: 0,
       patrolIndex: 0,
@@ -851,38 +935,33 @@
       armR: null
     };
 
-    // PROCEDURAL SCREAMER FACE GENERATOR (Terrifying Demon on Canvas)
+    // PROCEDURAL SCREAMER FACE GENERATOR
     function renderHorrorDemonFace() {
       const canvas = document.getElementById('screamer-canvas');
       const ctx = canvas.getContext('2d');
       const w = canvas.width;
       const h = canvas.height;
 
-      // Dark background with bloody scratches
       ctx.fillStyle = '#050202';
       ctx.fillRect(0, 0, w, h);
 
-      // Pale decaying skull-like face
       ctx.fillStyle = '#c7b89e';
       ctx.beginPath();
       ctx.ellipse(w / 2, h / 2 - 20, 180, 240, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // Deep hollow black eye sockets
       ctx.fillStyle = '#000';
       ctx.beginPath();
       ctx.ellipse(w / 2 - 70, h / 2 - 70, 48, 65, -0.2, 0, Math.PI * 2);
       ctx.ellipse(w / 2 + 70, h / 2 - 70, 48, 65, 0.2, 0, Math.PI * 2);
       ctx.fill();
 
-      // Glowing red pinprick pupils
       ctx.fillStyle = '#ff0000';
       ctx.beginPath();
       ctx.arc(w / 2 - 70, h / 2 - 70, 10, 0, Math.PI * 2);
       ctx.arc(w / 2 + 70, h / 2 - 70, 10, 0, Math.PI * 2);
       ctx.fill();
 
-      // Blood streaming down from eye sockets
       ctx.strokeStyle = '#8b0000';
       ctx.lineWidth = 12;
       for (let i = 0; i < 6; i++) {
@@ -897,22 +976,18 @@
         ctx.stroke();
       }
 
-      // Horrifying gaping screaming mouth filled with sharp needle teeth
       ctx.fillStyle = '#0a0002';
       ctx.beginPath();
       ctx.ellipse(w / 2, h / 2 + 110, 85, 120, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // Razor sharp teeth
       ctx.fillStyle = '#ffffe0';
       for (let x = w / 2 - 75; x <= w / 2 + 75; x += 15) {
-        // Upper teeth
         ctx.beginPath();
         ctx.moveTo(x, h / 2 + 30);
         ctx.lineTo(x + 7, h / 2 + 65);
         ctx.lineTo(x + 14, h / 2 + 30);
         ctx.fill();
-        // Lower teeth
         ctx.beginPath();
         ctx.moveTo(x, h / 2 + 190);
         ctx.lineTo(x + 7, h / 2 + 155);
@@ -921,7 +996,6 @@
       }
     }
 
-    // TRIGGER AN IMMEDIATE JUMPSCARE
     let isScreamerActive = false;
     function triggerScreamer(text = "¡TE ENCONTRÓ!", duration = 850) {
       if (isScreamerActive) return;
@@ -943,16 +1017,13 @@
 
     // --- INITIALIZE GRAPHICS ---
     function init() {
-      // 1. Scene
       scene = new THREE.Scene();
       scene.background = new THREE.Color(0x020305);
-      scene.fog = new THREE.FogExp2(0x020305, 0.05);
+      scene.fog = new THREE.FogExp2(0x020305, 0.048);
 
-      // 2. Camera
       camera = new THREE.PerspectiveCamera(74, window.innerWidth / window.innerHeight, 0.1, 80);
       camera.rotation.order = 'YXZ';
 
-      // 3. Renderer
       renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -960,12 +1031,12 @@
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       document.getElementById('game-canvas').appendChild(renderer.domElement);
 
-      // 4. Ambient Dim Light
-      const ambient = new THREE.AmbientLight(0x060810, 0.3);
+      // Ambient light - faint dark moonlight
+      const ambient = new THREE.AmbientLight(0x080a12, 0.35);
       scene.add(ambient);
 
-      // 5. Flashlight Spotlight
-      flashlight = new THREE.SpotLight(0xffeedd, 3.5, 42, Math.PI / 5.2, 0.45, 1.2);
+      // Flashlight Spotlight
+      flashlight = new THREE.SpotLight(0xffeedd, 3.6, 42, Math.PI / 5.2, 0.45, 1.2);
       flashlight.castShadow = true;
       flashlight.shadow.mapSize.width = 1024;
       flashlight.shadow.mapSize.height = 1024;
@@ -977,15 +1048,11 @@
       scene.add(flashlightTarget);
       flashlight.target = flashlightTarget;
 
-      // 6. Build Labyrinth & Monster
       buildLabyrinth();
       buildMonster();
-
-      // 7. Event Listeners
       setupControls();
       window.addEventListener('resize', onWindowResize);
 
-      // 8. Start Loop
       requestAnimationFrame(gameLoop);
     }
 
@@ -1036,7 +1103,7 @@
         metalness: 0.9,
         roughness: 0.2,
         emissive: 0xff8800,
-        emissiveIntensity: 0.4
+        emissiveIntensity: 0.5
       });
 
       for (let r = 0; r < mapSize; r++) {
@@ -1053,6 +1120,7 @@
             scene.add(wall);
             wallBoundingBoxes.push(new THREE.Box3().setFromObject(wall));
           } else if (cell === 2) {
+            // Relic Spawn
             const relicGroup = new THREE.Group();
             relicGroup.position.set(x, 1.2, z);
 
@@ -1067,6 +1135,30 @@
           }
         }
       }
+
+      // SPAWN SPARE BATTERIES IN MAZE CORNERS
+      const batteryLocs = [
+        [3 * cellSize + cellSize / 2, 3 * cellSize + cellSize / 2],
+        [8 * cellSize + cellSize / 2, 5 * cellSize + cellSize / 2],
+        [13 * cellSize + cellSize / 2, 10 * cellSize + cellSize / 2]
+      ];
+
+      const battGeo = new THREE.CylinderGeometry(0.14, 0.14, 0.45, 12);
+      const battMat = new THREE.MeshStandardMaterial({ color: 0x00f0ff, emissive: 0x0088ff, emissiveIntensity: 0.5 });
+
+      batteryLocs.forEach(loc => {
+        const bg = new THREE.Group();
+        bg.position.set(loc[0], 0.4, loc[1]);
+        const bm = new THREE.Mesh(battGeo, battMat);
+        bm.rotation.z = Math.PI / 2;
+        bg.add(bm);
+
+        const bl = new THREE.PointLight(0x00f0ff, 0.8, 4);
+        bg.add(bl);
+
+        scene.add(bg);
+        batteryPickups.push({ group: bg, collected: false });
+      });
 
       playerPos.set(1 * cellSize + cellSize / 2, 1.6, 1 * cellSize + cellSize / 2);
     }
@@ -1092,7 +1184,6 @@
       eyeR.position.x = -0.14;
       monsterGroup.add(eyeR);
 
-      // Claws / Arms that flail violently during chase
       const armMat = new THREE.MeshStandardMaterial({ color: 0x08080c });
       monster.armL = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.05, 2.5), armMat);
       monster.armL.position.set(0.65, 1.3, 0.4);
@@ -1111,7 +1202,7 @@
       scene.add(monster.mesh);
     }
 
-    // --- CONTROLS & POINTER LOCK ---
+    // --- CONTROLS & FLASHLIGHT TOGGLE (FIXED 100%) ---
     function setupControls() {
       const canvas = document.getElementById('game-canvas');
 
@@ -1148,7 +1239,6 @@
         if (e.key === 'Shift') keys.shift = false;
       });
 
-      // Mobile Buttons
       setupMobileBtn('m-up', 'w');
       setupMobileBtn('m-down', 's');
       setupMobileBtn('m-left', 'a');
@@ -1177,13 +1267,25 @@
       el.addEventListener('touchend', (e) => { e.preventDefault(); keys[key] = false; });
     }
 
+    // --- CORREGIDO: TOGGLE FLASHLIGHT FUNCIONA SIEMPRE ---
     function toggleFlashlight() {
       flashlightOn = !flashlightOn;
       flashlight.visible = flashlightOn;
+      
+      const icon = document.getElementById('flashlight-icon');
+      if (flashlightOn) {
+        flashlight.intensity = 3.6;
+        icon.classList.add('active');
+      } else {
+        flashlight.intensity = 0;
+        icon.classList.remove('active');
+      }
+
       audio.playFlashlightClick();
     }
 
     function checkInteractAction() {
+      // 1. Check Relics
       relicObjects.forEach(relic => {
         if (!relic.collected) {
           const dist = playerPos.distanceTo(relic.group.position);
@@ -1194,7 +1296,6 @@
             document.getElementById('hud-keys').textContent = keysCollected;
             audio.playPickupRelic();
 
-            // SÚBITO JUMPSCARE AL RECOGER RELIQUIA + INICIA PERSECUCIÓN VIOLENTA
             triggerScreamer("¡LA MALDICIÓN DESPERTÓ!", 950);
             startEnragedChase();
 
@@ -1204,12 +1305,26 @@
           }
         }
       });
+
+      // 2. Check Batteries
+      batteryPickups.forEach(batt => {
+        if (!batt.collected) {
+          const dist = playerPos.distanceTo(batt.group.position);
+          if (dist < 3.2) {
+            batt.collected = true;
+            scene.remove(batt.group);
+            batteryLevel = Math.min(100, batteryLevel + 40);
+            audio.playPickupBattery();
+            document.getElementById('hud-battery').style.width = `${batteryLevel}%`;
+            document.getElementById('hud-battery-text').textContent = `${Math.round(batteryLevel)}%`;
+          }
+        }
+      });
     }
 
-    // INICIA PERSECUCIÓN A MÁXIMA VELOCIDAD
     function startEnragedChase() {
       monster.isChasing = true;
-      monster.chaseTimer = 18; // 18 segundos de persecución implacable
+      monster.chaseTimer = 16;
       audio.setChaseAudio(true);
       document.getElementById('chase-banner').style.display = 'block';
       document.getElementById('chase-vignette').classList.add('active');
@@ -1226,7 +1341,14 @@
       keysCollected = 0;
       batteryLevel = 100;
       stamina = 100;
+      flashlightOn = true;
+      flashlight.visible = true;
+      flashlight.intensity = 3.6;
+      document.getElementById('flashlight-icon').classList.add('active');
       document.getElementById('hud-keys').textContent = 0;
+      document.getElementById('hud-battery').style.width = '100%';
+      document.getElementById('hud-battery-text').textContent = '100%';
+
       playerPos.set(1 * cellSize + cellSize / 2, 1.6, 1 * cellSize + cellSize / 2);
       monster.pos.set(12 * cellSize, 1.8, 12 * cellSize);
       stopChase();
@@ -1235,6 +1357,13 @@
         if (r.collected) {
           r.collected = false;
           scene.add(r.group);
+        }
+      });
+
+      batteryPickups.forEach(b => {
+        if (b.collected) {
+          b.collected = false;
+          scene.add(b.group);
         }
       });
 
@@ -1257,8 +1386,6 @@
       isPlaying = false;
       stopChase();
       document.exitPointerLock();
-
-      // VIOLENTO JUMPSCARE FINAL
       triggerScreamer("† TE ATRAPÓ †", 1800);
 
       setTimeout(() => {
@@ -1284,8 +1411,8 @@
         updatePlayerMovement(delta);
         updateFlashlight(delta);
         updateMonsterAI(delta);
-        updateRelics(delta);
-        checkPrompts();
+        updateInteractables(delta);
+        checkPromptsAndRadar();
       }
 
       renderer.render(scene, camera);
@@ -1297,9 +1424,9 @@
 
       if (isRunning) {
         speed = 7.6;
-        stamina = Math.max(0, stamina - delta * 25);
+        stamina = Math.max(0, stamina - delta * 24);
       } else {
-        stamina = Math.min(100, stamina + delta * 15);
+        stamina = Math.min(100, stamina + delta * 16); // Recuperación de estamina mejorada
       }
       document.getElementById('hud-stamina').style.width = `${stamina}%`;
 
@@ -1324,12 +1451,12 @@
       const nextX = playerPos.x + moveDir.x * speed * delta;
       const nextZ = playerPos.z + moveDir.z * speed * delta;
 
-      const pRadius = 0.6;
+      // Colisión fluida sin atascos (radio optimizado 0.42)
+      const pRadius = 0.42;
       if (!isCollidingWithWalls(nextX, playerPos.z, pRadius)) playerPos.x = nextX;
       if (!isCollidingWithWalls(playerPos.x, nextZ, pRadius)) playerPos.z = nextZ;
 
-      // Head bobbing & Camera Shake
-      let bobY = moveDir.lengthSq() > 0 ? Math.sin(globalTime * (isRunning ? 15 : 9)) * 0.07 : 0;
+      let bobY = moveDir.lengthSq() > 0 ? Math.sin(globalTime * (isRunning ? 15 : 9)) * 0.06 : 0;
       let shakeX = (Math.random() - 0.5) * cameraShake;
       let shakeY = (Math.random() - 0.5) * cameraShake;
       cameraShake = Math.max(0, cameraShake - delta * 1.5);
@@ -1350,18 +1477,25 @@
       return false;
     }
 
+    // --- CORREGIDO: LINTERNA SE ENCIENDE Y APAGA PERFECTAMENTE ---
     function updateFlashlight(delta) {
       if (flashlightOn) {
-        batteryLevel = Math.max(0, batteryLevel - delta * 0.7);
+        batteryLevel = Math.max(0, batteryLevel - delta * 0.55);
         document.getElementById('hud-battery').style.width = `${batteryLevel}%`;
+        document.getElementById('hud-battery-text').textContent = `${Math.round(batteryLevel)}%`;
 
-        // Flickering when battery is low or in a chase
-        if (batteryLevel < 25 || monster.isChasing) {
-          if (Math.random() < (monster.isChasing ? 0.16 : 0.08)) {
-            flashlight.intensity = Math.random() * 1.4;
+        if (batteryLevel <= 0) {
+          flashlight.intensity = 0;
+          document.getElementById('flashlight-icon').classList.remove('active');
+        } else if (batteryLevel < 20 || monster.isChasing) {
+          // Parpadeo de batería baja o persecución
+          if (Math.random() < (monster.isChasing ? 0.15 : 0.07)) {
+            flashlight.intensity = Math.random() * 1.2;
           } else {
-            flashlight.intensity = 3.5;
+            flashlight.intensity = 3.6;
           }
+        } else {
+          flashlight.intensity = 3.6; // Restaurar siempre intensidad máxima al encender
         }
       } else {
         flashlight.intensity = 0;
@@ -1372,12 +1506,21 @@
       flashlightTarget.position.copy(camera.position).add(lookDir.multiplyScalar(15));
     }
 
-    // --- MONSTER CHASE AI & JUMPSCARE TRIGGERS ---
+    // --- MONSTER CHASE & STEALTH MECÁNICA ---
     function updateMonsterAI(delta) {
       const distToPlayer = monster.pos.distanceTo(playerPos);
       const staticEl = document.getElementById('static-glitch');
+      const stealthBadge = document.getElementById('stealth-badge');
 
-      // Heartbeat pulse frequency scales with proximity
+      // Stealth check: Si linterna está apagada y jugador no corre
+      const isStealthed = !flashlightOn && !keys.shift;
+      if (isStealthed && distToPlayer > 3.5) {
+        stealthBadge.style.display = 'flex';
+      } else {
+        stealthBadge.style.display = 'none';
+      }
+
+      // Heartbeat pulse frequency
       if (distToPlayer < 28) {
         const prox = Math.max(0, 1 - (distToPlayer / 28));
         staticEl.style.opacity = (prox * 0.85).toString();
@@ -1392,14 +1535,14 @@
         staticEl.style.opacity = '0';
       }
 
-      // Proximity detection triggers chase
+      // Detection: Si jugador alumbra al monstruo o corre cerca, inicia persecución
       if (distToPlayer < 18 && (flashlightOn || keys.shift)) {
         if (!monster.isChasing) {
           startEnragedChase();
         }
       }
 
-      // Flailing arms animation
+      // Animación de garras
       if (monster.armL && monster.armR) {
         const armSwing = Math.sin(globalTime * (monster.isChasing ? 18 : 6)) * 0.6;
         monster.armL.rotation.x = armSwing;
@@ -1408,22 +1551,23 @@
 
       if (monster.isChasing) {
         monster.chaseTimer -= delta;
-        if (monster.chaseTimer <= 0 && distToPlayer > 20) {
+
+        // Si el jugador apaga la linterna y se aleja, el monstruo pierde el rastro
+        if (isStealthed && distToPlayer > 9.5) {
+          stopChase();
+        } else if (monster.chaseTimer <= 0 && distToPlayer > 18) {
           stopChase();
         }
 
-        // Fast sprint pursuit towards player
         const dir = playerPos.clone().sub(monster.pos).setY(0).normalize();
         monster.pos.add(dir.multiplyScalar(monster.chaseSpeed * delta));
         monster.mesh.lookAt(playerPos.x, monster.pos.y, playerPos.z);
 
-        // Caught by monster!
         if (distToPlayer < 1.35) {
           triggerCaughtGameOver();
           return;
         }
       } else {
-        // Normal patrol
         const target = monster.patrolPoints[monster.patrolIndex];
         const dir = target.clone().sub(monster.pos).setY(0);
         if (dir.length() < 1.6) {
@@ -1438,28 +1582,74 @@
       monster.mesh.position.copy(monster.pos);
     }
 
-    function updateRelics(delta) {
+    function updateInteractables(delta) {
       relicObjects.forEach(r => {
         if (!r.collected) {
           r.mesh.rotation.y += delta * 1.6;
           r.mesh.rotation.x += delta * 0.8;
         }
       });
+
+      batteryPickups.forEach(b => {
+        if (!b.collected) {
+          b.group.rotation.y += delta * 2.0;
+        }
+      });
     }
 
-    function checkPrompts() {
+    // --- PROXIMITY RADAR & INTERACTION DETECTION ---
+    function checkPromptsAndRadar() {
+      let nearestRelicDist = Infinity;
       let isNearRelic = false;
+      let isNearBattery = false;
       const crosshair = document.getElementById('crosshair');
 
       relicObjects.forEach(r => {
         if (!r.collected) {
           const d = playerPos.distanceTo(r.group.position);
+          if (d < nearestRelicDist) nearestRelicDist = d;
           if (d < 3.2) isNearRelic = true;
         }
       });
 
+      batteryPickups.forEach(b => {
+        if (!b.collected) {
+          const d = playerPos.distanceTo(b.group.position);
+          if (d < 3.2) isNearBattery = true;
+        }
+      });
+
+      // Update Proximity Radar
+      const radarText = document.getElementById('radar-text');
+      const radarDot = document.getElementById('radar-dot');
+
+      if (nearestRelicDist < 12) {
+        radarText.textContent = `Reliquia: ¡MUY CERCA (${Math.round(nearestRelicDist)}m)!`;
+        radarText.style.color = '#ffd700';
+        radarDot.style.background = '#ffd700';
+        radarDot.style.boxShadow = '0 0 10px #ffd700';
+      } else if (nearestRelicDist < 25) {
+        radarText.textContent = `Reliquia detectada (${Math.round(nearestRelicDist)}m)`;
+        radarText.style.color = '#00f0ff';
+        radarDot.style.background = '#00f0ff';
+        radarDot.style.boxShadow = '0 0 8px #00f0ff';
+      } else {
+        radarText.textContent = `Detector: Buscando...`;
+        radarText.style.color = '#94a3b8';
+        radarDot.style.background = '#10b981';
+        radarDot.style.boxShadow = '0 0 6px #10b981';
+      }
+
+      // Interaction Prompt
       const prompt = document.getElementById('interact-prompt');
+      const promptText = document.getElementById('prompt-text');
+
       if (isNearRelic) {
+        promptText.textContent = "Recoger Reliquia Maldita";
+        prompt.style.display = 'flex';
+        crosshair.classList.add('active');
+      } else if (isNearBattery) {
+        promptText.textContent = "Recoger Batería de Linterna (+40%)";
         prompt.style.display = 'flex';
         crosshair.classList.add('active');
       } else {
